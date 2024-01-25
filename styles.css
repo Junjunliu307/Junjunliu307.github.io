@@ -63,13 +63,13 @@ footer div:nth-last-child(2) {
 }
 
 footer button {
-    margin-top: 30px;
+    margin-top: 10px;
     background-color: rgb(165, 137, 73);
     border: 1px solid white;
     color: white;
     cursor: pointer;
     width: 70%;
-    height: 50%;
+    height: 70%;
 }
 
 /* Main */
