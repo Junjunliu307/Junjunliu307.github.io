@@ -190,13 +190,13 @@ p {
 .parallax-container3 img {
     width: 40vh;
     height: 70vh;
-    margin-left: 80vh;
+    margin-left: 90vh;
 }
 
 .gallery {
     position: absolute;
     margin-top: -17%;
-    left: 122vh;
+    left: 127vh;
     color: white;
     font-size: 24px;
     font-weight: normal;
@@ -206,7 +206,7 @@ p {
 .gallery-text {
     position: absolute;
     margin-top: 2%;
-    left: 117vh;
+    left: 122vh;
     color: white;
     font-size: 19px;
     font-family: "EB Garamond", serif;
@@ -217,7 +217,7 @@ p {
     position: absolute;
     padding: 10px 20px;
     margin-top: 26%;
-    left: 125vh;
+    left: 130vh;
     font-size: 16px;
     text-align: center;
     background-color: rgb(165, 137, 73);
