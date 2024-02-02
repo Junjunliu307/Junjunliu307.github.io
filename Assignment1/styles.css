@@ -80,7 +80,7 @@ main {
 body {
     margin: 0;
     padding: 0;
-    height: auto;
+    height: 150vh;
     width: 1239px;
     overflow-x: hidden;
     align-items: center;
@@ -93,19 +93,18 @@ body {
 
 .image-container {
     display: flex;
-    padding-left: 2vh;
 }
 
 .image-container img {
     width: auto;
-    height: 37vh;
-    margin-left: 7vh;
+    height: 70vh;
+    margin-left: 20vh;
 }
 
 .service {
     position: absolute;
-    margin-top: 10%;
-    left: 15vh;
+    margin-top: 9%;
+    left: 31vh;
     color: white;
     font-size: 24px;
     font-weight: normal;
@@ -114,8 +113,8 @@ body {
 
 .service-text {
     position: absolute;
-    margin-top: 22%;
-    left: 12vh;
+    margin-top: 20%;
+    left: 25vh;
     color: white;
     font-size: 18px;
     font-family: "EB Garamond", serif;
@@ -127,7 +126,7 @@ body {
     position: absolute;
     padding: 10px 20px;
     margin-top: 30%;
-    left: 18vh;
+    left: 35vh;
     font-size: 16px;
     text-align: center;
     background-color: rgb(165, 137, 73);
@@ -184,7 +183,7 @@ p {
 }
 
 .parallax-container3 {
-    height: 50vh;
+    height: 80vh;
     background-image: url('./images/image2.png');
     background-size: 100%;
     background-position: center;
@@ -197,15 +196,15 @@ p {
 }
 
 .parallax-container3 img {
-    width: 25vh;
-    height: 40vh;
-    margin-left: 40vh;
+    width: 40vh;
+    height: 70vh;
+    margin-left: 90vh;
 }
 
 .gallery {
     position: absolute;
     margin-top: -17%;
-    left: 60vh;
+    left: 127vh;
     color: white;
     font-size: 24px;
     font-weight: normal;
@@ -215,7 +214,7 @@ p {
 .gallery-text {
     position: absolute;
     margin-top: 2%;
-    left: 58vh;
+    left: 122vh;
     color: white;
     font-size: 19px;
     font-family: "EB Garamond", serif;
@@ -226,7 +225,7 @@ p {
     position: absolute;
     padding: 10px 20px;
     margin-top: 26%;
-    left: 62vh;
+    left: 130vh;
     font-size: 16px;
     text-align: center;
     background-color: rgb(165, 137, 73);
@@ -244,7 +243,7 @@ p {
     top: auto;
     left: 0;
     width: 10%;
-    height: 60%;
+    height: 80%;
     background-color: rgba(255, 255, 255, 1);
 }
 
@@ -253,6 +252,6 @@ p {
     top: auto;
     left: 90%;
     width: 10%;
-    height: 60%;
+    height: 80%;
     background-color: rgba(255, 255, 255, 1);
 }
