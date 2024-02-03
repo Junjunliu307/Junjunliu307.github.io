@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+}
+
+.container p {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.container img {
+    width: 720px;
+    height: auto;
+}
+
+input {
+    padding: 10px;
+    width: 70%;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+}
+
+.search-btn img,
+.delete-btn img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.3;
+}
+
+.search-btn:hover img {
+    opacity: 1;
+}
+
+.delete-btn:hover img {
+    opacity: 1;
+}
+
+#results {
+    margin-top: 20px;
+}
