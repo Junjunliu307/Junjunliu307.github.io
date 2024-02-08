@@ -5,6 +5,8 @@ body {
 }
 
 .container {
+    background-image: url('../img/back.svg');
+    height: 300px;
     text-align: center;
 }
 
@@ -15,6 +17,7 @@ body {
 }
 
 .container img {
+    padding-top: 0;
     width: 720px;
     height: auto;
 }
@@ -35,7 +38,7 @@ button {
 }
 
 .search-btn img,
-.delete-btn img {
+.clear-btn img {
     width: 20px;
     height: 20px;
     opacity: 0.3;
@@ -45,15 +48,52 @@ button {
     opacity: 1;
 }
 
-.delete-btn:hover img {
+.clear-btn:hover img {
     opacity: 1;
 }
 
 #resultContainer {
-    margin-top: 20px;
+    margin-top: 8%;
+}
+
+.buttonContainer {
+    width: 80%;
+    border: none;
+    background-color: #F5F5F5;
+}
+
+.buttonContainer button {
+    cursor: pointer;
+    background-color: #F5F5F5;
+    color: black;
+    border: none;
     padding: 10px;
+}
+
+.buttonContainer button:hover {
+    background-color: #DCDCDC;
+}
+
+.buttonContainer button.clicked {
+    background-color: #C0C0C0;
+}
+
+/* 容器样式 */
+.newsContainer {
+    width: 80%;
+    display: flex;
+    align-items: center;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.newsImage {
+    margin-right: 20px;
+}
+
+.newsText {}
+
+#chartContainer {
+    margin-top: 0%;
 }

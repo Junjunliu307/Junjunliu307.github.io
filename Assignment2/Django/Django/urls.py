@@ -20,4 +20,5 @@ from app import views
 
 urlpatterns = [
     path('index/', views.index),
+    path('index/search/',views.search)
 ]

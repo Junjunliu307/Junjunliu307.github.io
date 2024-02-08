@@ -14,14 +14,14 @@
         <button class="search-btn" onclick="searchStock()"><img src="../static/img/search-solid.svg"
                 alt="Search"></button>
         <input type="text" id="searchInput" placeholder="Enter Stock Ticker Symbol">
-        <button class="delete-btn" onclick="searchStock()"><img src="../static/img/times-solid.svg"
-                alt="Delete"></button>
-        <img src="../static/img/back.svg"></img>
+        <button class="clear-btn" onclick="clearStock()"><img src="../static/img/times-solid.svg" alt="Clear"></button>
     </div>
 
     <div id="resultContainer"></div>
+    <div id="chartContainer"></div>
 
     <script src="../static/js/script.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highstock Example</title>
+    <!-- 引入Highcharts库 -->
+    <script src="../static/js/script.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+</head>
+
+<body>
+
+    <!-- 图表容器 -->
+    <div id="container" style="width: 800px; height: 400px;"></div>
+
+    <script>
+        // 创建Highstock图表
+        Highcharts.stockChart('container', {
+            rangeSelector: {
+                selected: 1
+            },
+            title: {
+                text: 'AAPL Stock Price'
+            },
+            series: [{
+                name: 'AAPL',
+                // 模拟数据
+                data: [
+                    [1, 10],
+                    [2, 20],
+                    [3, 15],
+                    [4, 30],
+                    [5, 25]
+                ]
+            }]
+        });
+    </script>
+
+</body>
+
+</html>
