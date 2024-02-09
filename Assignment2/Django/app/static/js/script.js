@@ -1,5 +1,6 @@
 var record
 var resultElement
+var chartContainer
 const tokenF = 'cmvcithr01qog1iutdmgcmvcithr01qog1iutdn0'
 const tokenP = 'fSelM6w8GpMT23I9Cf6pwdkQNtl6OiJG'
 // 定义 searchStock 函数
@@ -44,6 +45,8 @@ function displayStockResult(data) {
                                <p>Stock Exchange Code: ${data.exchange}</p>
                                <p>Company Start Date: ${data.ipo}</p>
                                <p>Category: ${data.finnhubIndustry}</p>`;
+
+    chartContainer = document.getElementById('chartContainer')
     resultContainer.appendChild(tab);
     resultContainer.appendChild(resultElement);
 }
@@ -66,6 +69,8 @@ function clearStock() {
 }
 
 function handleButtonClick(buttonId) {
+    //使ChartContainer为可见
+    chartContainer.style.display = ''
     // 移除所有按钮的clicked类
     document.querySelectorAll('.buttonContainer button').forEach(function (btn) {
         btn.classList.remove('clicked');
@@ -74,6 +79,8 @@ function handleButtonClick(buttonId) {
     document.getElementById(buttonId).classList.add('clicked');
     resultElement.innerHTML = '';
     if (buttonId === 'company') {
+        //使ChartContainer为不可见
+        chartContainer.style.display = 'none'
         resultElement.innerHTML = `<img src=${record.logo}>
                                    <p>Company Name: ${record.name}</p>
                                    <p>Stock Ticker Symbol: ${record.ticker}</p>
@@ -81,6 +88,9 @@ function handleButtonClick(buttonId) {
                                    <p>Company Start Date: ${record.ipo}</p>
                                    <p>Category: ${record.finnhubIndustry}</p>`;
     } else if (buttonId === 'stockSummary') {
+        //使ChartContainer为不可见
+        chartContainer.style.display = 'none'
+
         var img
         if (record.d >= 0) {
             img = '../static/img/GreenArrowUp.png'
@@ -171,8 +181,10 @@ function handleButtonClick(buttonId) {
                 }]
             });
         })();
-
     } else if (buttonId === 'latestNews') {
+        //使ChartContainer为不可见
+        chartContainer.style.display = 'none'
+
         var html = ''
         for (var i = 0; i < record.latestNews.length; i++) {
             var news = record.latestNews[i];

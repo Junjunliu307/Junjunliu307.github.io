@@ -16,7 +16,7 @@ def search(request):
     res.update(finnhub_client.quote(symbol=sym))
     res.update(finnhub_client.recommendation_trends(symbol=sym)[0])
     aggs = []
-    for a in polygon_client.list_aggs(ticker= sym, multiplier=1, timespan="day", from_=str(current_date - timedelta(days=30)), to=str(current_date)):
+    for a in polygon_client.list_aggs(ticker= sym, multiplier=1, timespan="day", from_=str(current_date - timedelta(days=183)), to=str(current_date)):
         aggs.append([a.timestamp,a.close,a.volume])
     res.update({'chartData':aggs})
     news = finnhub_client.company_news(symbol=sym, _from=str(current_date - timedelta(days=30)), to=str(current_date))
