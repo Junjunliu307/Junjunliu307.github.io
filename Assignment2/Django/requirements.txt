@@ -1,0 +1,12 @@
+asgiref==3.7.2
+certifi==2023.11.17
+charset-normalizer==3.3.2
+Django==4.2.10
+finnhub-python==2.4.19
+idna==3.6
+polygon-api-client==1.13.4
+requests==2.31.0
+sqlparse==0.4.4
+typing_extensions==4.9.0
+urllib3==1.26.18
+websockets==12.0

@@ -39,12 +39,16 @@ function displayStockResult(data) {
                      <button onclick="handleButtonClick('charts')" id="charts">Charts</button>
                      <button onclick="handleButtonClick('latestNews')" id="latestNews">Latest News</button>`
     resultElement = document.createElement('div');
-    resultElement.innerHTML = `<img src=${data.logo}>
-                               <p>Company Name: ${data.name}</p>
-                               <p>Stock Ticker Symbol: ${data.ticker}</p>
-                               <p>Stock Exchange Code: ${data.exchange}</p>
-                               <p>Company Start Date: ${data.ipo}</p>
-                               <p>Category: ${data.finnhubIndustry}</p>`;
+    resultElement.innerHTML = `<p></p>
+                                <center><img src=${data.logo} height="100">
+                                <table border="0">
+                                    <tr><th align = "right">Company Name:</th><td>${data.name}</td></tr>
+                                    <tr><th align = "right">Stock Ticker Symbol:</th><td>${data.ticker}</td></tr>
+                                    <tr><th align = "right">Stock Exchange Code:</th><td>${data.exchange}</td></tr>
+                                    <tr><th align = "right">Company Start Date:</th><td>${data.ipo}</td></tr>
+                                    <tr><th align = "right">Category:</th><td>${data.finnhubIndustry}</td></tr>
+                               </table>
+                               </center>`
 
     chartContainer = document.getElementById('chartContainer')
     resultContainer.appendChild(tab);
@@ -81,12 +85,16 @@ function handleButtonClick(buttonId) {
     if (buttonId === 'company') {
         //使ChartContainer为不可见
         chartContainer.style.display = 'none'
-        resultElement.innerHTML = `<img src=${record.logo}>
-                                   <p>Company Name: ${record.name}</p>
-                                   <p>Stock Ticker Symbol: ${record.ticker}</p>
-                                   <p>Stock Exchange Code: ${record.exchange}</p>
-                                   <p>Company Start Date: ${record.ipo}</p>
-                                   <p>Category: ${record.finnhubIndustry}</p>`;
+        resultElement.innerHTML = `<p></p>
+        <center><img src=${record.logo} height="100">
+        <table border="0">
+            <tr><th align = "right">Company Name:</th><td>${record.name}</td></tr>
+            <tr><th align = "right">Stock Ticker Symbol:</th><td>${record.ticker}</td></tr>
+            <tr><th align = "right">Stock Exchange Code:</th><td>${record.exchange}</td></tr>
+            <tr><th align = "right">Company Start Date:</th><td>${record.ipo}</td></tr>
+            <tr><th align = "right">Category:</th><td>${record.finnhubIndustry}</td></tr>
+       </table>
+       </center>`;
     } else if (buttonId === 'stockSummary') {
         //使ChartContainer为不可见
         chartContainer.style.display = 'none'
@@ -98,16 +106,19 @@ function handleButtonClick(buttonId) {
             img = '../static/img/RedArrowDown.png'
         }
         // strongSell, sell, hold, buy, strongBuy
-        resultElement.innerHTML = `<p>Stock Ticker Symbol: ${record.ticker}</p>
-                                   <p>Trading Day: ${convertUnixEpochToDateFormat(record.t / 1000)}</p>
-                                   <p>Previous Closing Price: ${record.pc}</p>
-                                   <p>Opening Price: ${record.o}</p>
-                                   <p>High Price: ${record.h}</p>
-                                   <p>Low Price: ${record.l}</p>
-                                   <p>Change: ${record.d}<img src = ${img} width=2% height=2%></p>
-                                   <p>Change Percent: ${record.dp}<img src = ${img} width=2% height=2%></p>
-                                   <p>Strong Sell ${record.strongSell} ${record.sell} ${record.hold} ${record.buy} ${record.strongBuy} Strong Buy</p>
-                                   <p>Recommendation Trends</p>`
+        resultElement.innerHTML = `<center><table border="0">
+        <tr><th align = "right">Stock Ticker Symbol:</th><td>${record.ticker}</td></tr>
+        <tr><th align = "right">Trading Day:</th><td>${convertUnixEpochToDateFormat(record.t / 1000)}</td></tr>
+        <tr><th align = "right">Previous Closing Price:</th><td>${record.pc}</td></tr>
+        <tr><th align = "right">Opening Price:</th><td>${record.o}</td></tr>
+        <tr><th align = "right">High Price:</th><td>${record.h}</td></tr>
+        <tr><th align = "right">Low Price:</th><td>${record.l}</td></tr>
+        <tr><th align = "right">Change:</th><td>${record.d}<img src = ${img} width=2% height=2%></td></tr>
+        <tr><th align = "right">Change Percent:</th><td>${record.dp}<img src = ${img} width=2% height=2%</td></tr>
+        <tr><th align = "right">Strong Sell:</th><td>Strong Sell ${record.strongSell} ${record.sell} ${record.hold} ${record.buy} ${record.strongBuy} Strong Buy</td></tr>
+        <tr><th align = "right">Recommendation Trends:</th><td>${record.finnhubIndustry}</td></tr>
+   </table></center>`
+
     } else if (buttonId === 'charts') {
         (async () => {
             const ohlc = [],
@@ -191,7 +202,7 @@ function handleButtonClick(buttonId) {
             if (news.image === '') {
                 news.image = record.logo
             }
-            sub = `<div class="newsContainer">
+            sub = `<center><div class="newsContainer">
                        <div class="newsImage">
                            <img src=${news.image} width=100px>
                        </div>
@@ -200,7 +211,7 @@ function handleButtonClick(buttonId) {
                            <p>${convertUnixEpochToDateFormat(news.datetime / 1000)}</p>
                            <p><a href="${news.url}">See Original Post</a></p>
                        </div>
-                   </div>`
+                   </div></center>`
             html = html + sub
         }
         resultElement.innerHTML = `${html}`
