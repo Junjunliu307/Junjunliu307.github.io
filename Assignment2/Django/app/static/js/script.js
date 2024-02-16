@@ -10,7 +10,7 @@ function searchStock() {
     // get input company
     const symbol = document.getElementById('searchInput').value;
     // create api
-    const apiUrl = `http://127.0.0.1:8000/index/search?symbol=${symbol}&tokenF=${tokenF}&tokenP=${tokenP}`;
+    const apiUrl = `/index/search?symbol=${symbol}&tokenF=${tokenF}&tokenP=${tokenP}`;
     // send api
     fetch(apiUrl)
         .then(response => response.json())
