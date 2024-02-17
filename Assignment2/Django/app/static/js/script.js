@@ -108,7 +108,7 @@ function handleButtonClick(buttonId) {
         // strongSell, sell, hold, buy, strongBuy
         resultElement.innerHTML = `<center><table border="0">
         <tr><th align = "right">Stock Ticker Symbol:</th><td>${record.ticker}</td></tr>
-        <tr><th align = "right">Trading Day:</th><td>${convertUnixEpochToDateFormat(record.t / 1000)}</td></tr>
+        <tr><th align = "right">Trading Day:</th><td>${convertUnixEpochToDateFormat(record.t)}</td></tr>
         <tr><th align = "right">Previous Closing Price:</th><td>${record.pc}</td></tr>
         <tr><th align = "right">Opening Price:</th><td>${record.o}</td></tr>
         <tr><th align = "right">High Price:</th><td>${record.h}</td></tr>
@@ -208,7 +208,7 @@ function handleButtonClick(buttonId) {
                        </div>
                        <div class="newsText">
                            <p>${news.headline}</p>
-                           <p>${convertUnixEpochToDateFormat(news.datetime / 1000)}</p>
+                           <p>${convertUnixEpochToDateFormat(news.datetime)}</p>
                            <p><a href="${news.url}">See Original Post</a></p>
                        </div>
                    </div></center>`

@@ -20,6 +20,6 @@ def search(request):
         aggs.append([a.timestamp,a.close,a.volume])
     res.update({'chartData':aggs})
     news = finnhub_client.company_news(symbol=sym, _from=str(current_date - timedelta(days=30)), to=str(current_date))
-    news = news[-5:] if len(news)>5 else news
+    news = news[:5] if len(news)>5 else news
     res.update({'latestNews':news})
     return JsonResponse(res)
