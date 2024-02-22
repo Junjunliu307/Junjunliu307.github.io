@@ -20,6 +20,11 @@ def search(request):
         aggs.append([a.timestamp,a.close,a.volume])
     res.update({'chartData':aggs})
     news = finnhub_client.company_news(symbol=sym, _from=str(current_date - timedelta(days=30)), to=str(current_date))
+    for i in range(len(news)-1,-1,-1):
+        if news[i]["image"] == "" or news[i]["url"] == "" or news[i]["headline"] == "" or news[i]["datetime"] == "":
+            del news[i]
+
+
     news = news[:5] if len(news)>5 else news
     res.update({'latestNews':news})
     return JsonResponse(res)

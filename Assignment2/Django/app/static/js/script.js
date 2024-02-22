@@ -39,8 +39,8 @@ function displayStockResult(data) {
                      <button onclick="handleButtonClick('charts')" id="charts">Charts</button>
                      <button onclick="handleButtonClick('latestNews')" id="latestNews">Latest News</button>`
     resultElement = document.createElement('div');
-    resultElement.innerHTML = `<p></p>
-                                <center><img src=${data.logo} height="100">
+    resultElement.innerHTML = `<br>
+                                <div align="center"><img src=${data.logo} height="100">
                                 <table border="0">
                                     <tr><th align = "right">Company Name:</th><td>${data.name}</td></tr>
                                     <tr><th align = "right">Stock Ticker Symbol:</th><td>${data.ticker}</td></tr>
@@ -48,7 +48,7 @@ function displayStockResult(data) {
                                     <tr><th align = "right">Company Start Date:</th><td>${data.ipo}</td></tr>
                                     <tr><th align = "right">Category:</th><td>${data.finnhubIndustry}</td></tr>
                                </table>
-                               </center>`
+                               </div>`
 
     chartContainer = document.getElementById('chartContainer')
     resultContainer.appendChild(tab);
@@ -85,8 +85,8 @@ function handleButtonClick(buttonId) {
     if (buttonId === 'company') {
         //使ChartContainer为不可见
         chartContainer.style.display = 'none'
-        resultElement.innerHTML = `<p></p>
-        <center><img src=${record.logo} height="100">
+        resultElement.innerHTML = `<br>
+        <div align="center"><img src=${record.logo} height="100">
         <table border="0">
             <tr><th align = "right">Company Name:</th><td>${record.name}</td></tr>
             <tr><th align = "right">Stock Ticker Symbol:</th><td>${record.ticker}</td></tr>
@@ -94,7 +94,7 @@ function handleButtonClick(buttonId) {
             <tr><th align = "right">Company Start Date:</th><td>${record.ipo}</td></tr>
             <tr><th align = "right">Category:</th><td>${record.finnhubIndustry}</td></tr>
        </table>
-       </center>`;
+       </div>`;
     } else if (buttonId === 'stockSummary') {
         //使ChartContainer为不可见
         chartContainer.style.display = 'none'
@@ -106,7 +106,8 @@ function handleButtonClick(buttonId) {
             img = '../static/img/RedArrowDown.png'
         }
         // strongSell, sell, hold, buy, strongBuy
-        resultElement.innerHTML = `<center><table border="0">
+        resultElement.innerHTML = `<br>
+        <div align="center"><table border="0">
         <tr><th align = "right">Stock Ticker Symbol:</th><td>${record.ticker}</td></tr>
         <tr><th align = "right">Trading Day:</th><td>${convertUnixEpochToDateFormat(record.t)}</td></tr>
         <tr><th align = "right">Previous Closing Price:</th><td>${record.pc}</td></tr>
@@ -115,9 +116,18 @@ function handleButtonClick(buttonId) {
         <tr><th align = "right">Low Price:</th><td>${record.l}</td></tr>
         <tr><th align = "right">Change:</th><td>${record.d}<img src = ${img} width=2% height=2%></td></tr>
         <tr><th align = "right">Change Percent:</th><td>${record.dp}<img src = ${img} width=2% height=2%</td></tr>
-        <tr><th align = "right">Strong Sell:</th><td>Strong Sell ${record.strongSell} ${record.sell} ${record.hold} ${record.buy} ${record.strongBuy} Strong Buy</td></tr>
-        <tr><th align = "right">Recommendation Trends:</th><td>${record.finnhubIndustry}</td></tr>
-   </table></center>`
+        </table>
+        <br>
+        <div class="recommendation strong-sell-text">Strong Sell</div>
+        <div class="recommendation strong-sell">${record.strongSell}</div>
+        <div class="recommendation sell">${record.sell}</div>
+        <div class="recommendation hold">${record.hold}</div>
+        <div class="recommendation buy">${record.buy}</div>
+        <div class="recommendation strong-buy">${record.strongBuy}</div>
+        <div class="recommendation strong-buy-text">Strong Buy</div>
+        <br><br>
+        <div>Recommendation Trend</div>
+   </div>`
 
     } else if (buttonId === 'charts') {
         (async () => {
@@ -142,7 +152,12 @@ function handleButtonClick(buttonId) {
                 },
 
                 title: {
-                    text: `${record.ticker} Stock Price`
+                    text: `${record.ticker} Stock Prices`
+                },
+
+                subtitle: {
+                    useHTML: true,
+                    text: '<a href="https://polygon.io/">Source: Polygon.io</a>'
                 },
 
                 navigator: {
@@ -157,7 +172,7 @@ function handleButtonClick(buttonId) {
                         text: 'Stock Price'
                     }
                 }, {
-                    opposite: true,
+                    opposite: false,
                     title: {
                         text: 'Volume'
                     }
@@ -227,4 +242,18 @@ function convertUnixEpochToDateFormat(unixEpochTime) {
     const formatter = new Intl.DateTimeFormat('en-UK', options);
     const formattedDate = formatter.format(date);
     return formattedDate;
+}
+
+function equalizeTableCellWidths() {
+    console.log('hi')
+    var table = document.querySelectorAll('table');
+    var maxWidth = 0;
+    var cells = table.querySelectorAll('td');
+    cells.forEach(function (cell) {
+        var cellWidth = cell.offsetWidth;
+        maxWidth = Math.max(maxWidth, cellWidth);
+    });
+    cells.forEach(function (cell) {
+        cell.style.width = maxWidth + 'px';
+    });
 }

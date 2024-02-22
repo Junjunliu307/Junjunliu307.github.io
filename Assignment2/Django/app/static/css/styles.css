@@ -53,7 +53,7 @@ button {
 }
 
 #resultContainer {
-    margin-top: 8%;
+    margin-top: 0%;
 }
 
 .buttonContainer {
@@ -82,11 +82,15 @@ button {
 
 table {
     border-collapse: collapse;
-    width: 80%;
+    width: auto;
+    /* 使用自动布局 */
+    table-layout: auto;
+    /* 表格布局方式设置为自动 */
 }
 
 td,
 th {
+    width: 300px;
     border: none;
 }
 
@@ -98,8 +102,6 @@ tr {
 .newsContainer {
     width: 80%;
     display: flex;
-    /* align-items: center;
-    justify-content: center; */
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -107,12 +109,55 @@ tr {
 
 .newsImage {
     margin-right: 20px;
+    margin-top: 5%;
 }
 
 .newsText {
     text-align: left;
 }
 
-.chartContainer {
-    margin-top: 0%;
+#chartContainer {
+    width: 80%;
+    margin-left: 10%;
+}
+
+.recommendation {
+    display: inline-block;
+    padding: 5px 10px;
+    color: white;
+    margin-right: -5px;
+    font-weight: bold;
+}
+
+.strong-sell-text {
+    color: #ff4d4d;
+}
+
+.strong-sell {
+    background-color: #ff4d4d;
+}
+
+/* 红色 */
+.sell {
+    background-color: #ffafaf;
+}
+
+/* 浅红色 */
+.hold {
+    background-color: #ffff99;
+}
+
+/* 黄色 */
+.buy {
+    background-color: #99ff99;
+}
+
+/* 浅绿色 */
+.strong-buy {
+    background-color: #4dff4d;
+}
+
+/* 绿色 */
+.strong-buy-text {
+    color: #4dff4d;
 }
