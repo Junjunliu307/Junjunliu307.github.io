@@ -3,6 +3,13 @@ var resultElement
 var chartContainer
 const tokenF = 'cmvcithr01qog1iutdmgcmvcithr01qog1iutdn0'
 const tokenP = 'fSelM6w8GpMT23I9Cf6pwdkQNtl6OiJG'
+
+function handleKeyPress(event) {
+    if (event.keyCode === 13) {
+        // 如果按下的是回车键，执行搜索操作
+        searchStock();
+    }
+}
 // 定义 searchStock 函数
 function searchStock() {
     const tokenF = 'cmvcithr01qog1iutdmgcmvcithr01qog1iutdn0'
@@ -24,7 +31,6 @@ function searchStock() {
         })
         .catch(error => console.error('Error:', error));
 }
-
 function displayStockResult(data) {
     // clear container
     const resultContainer = document.getElementById('resultContainer');

@@ -13,7 +13,7 @@
         <p>Stock Search</p>
         <button class="search-btn" onclick="searchStock()"><img src="../static/img/search-solid.svg"
                 alt="Search"></button>
-        <input type="text" id="searchInput" placeholder="Enter Stock Ticker Symbol">
+        <input type="text" id="searchInput" placeholder="Enter Stock Ticker Symbol" onkeypress="handleKeyPress(event)">
         <button class="clear-btn" onclick="clearStock()"><img src="../static/img/times-solid.svg" alt="Clear"></button>
     </div>
 
