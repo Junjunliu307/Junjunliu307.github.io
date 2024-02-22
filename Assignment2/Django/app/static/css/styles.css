@@ -6,6 +6,7 @@ body {
 
 .container {
     background-image: url('../img/back.svg');
+    background-position: center;
     height: 300px;
     text-align: center;
 }
@@ -42,6 +43,15 @@ button {
     width: 20px;
     height: 20px;
     opacity: 0.3;
+}
+
+.error-container {
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 5px 5px 10px 10px;
+    margin-left: 30%;
+    width: 40%
 }
 
 .search-btn:hover img {
@@ -109,7 +119,7 @@ tr {
 
 .newsImage {
     margin-right: 20px;
-    margin-top: 5%;
+    margin-top: 3%;
 }
 
 .newsText {

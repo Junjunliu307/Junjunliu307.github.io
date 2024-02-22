@@ -13,6 +13,8 @@ def search(request):
     finnhub_client = finnhub.Client(api_key=request.GET.get('tokenF'))
     polygon_client = RESTClient(api_key=request.GET.get('tokenP'))
     res = finnhub_client.company_profile2(symbol=sym)
+    if res == {}:
+        return JsonResponse(res)
     res.update(finnhub_client.quote(symbol=sym))
     res.update(finnhub_client.recommendation_trends(symbol=sym)[0])
     aggs = []
@@ -23,8 +25,6 @@ def search(request):
     for i in range(len(news)-1,-1,-1):
         if news[i]["image"] == "" or news[i]["url"] == "" or news[i]["headline"] == "" or news[i]["datetime"] == "":
             del news[i]
-
-
     news = news[:5] if len(news)>5 else news
     res.update({'latestNews':news})
     return JsonResponse(res)

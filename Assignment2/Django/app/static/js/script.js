@@ -14,7 +14,6 @@ function searchStock() {
     // send api
     fetch(apiUrl)
         .then(response => response.json())
-        // .then(data => console.log(data))
         .then(data => {
             record = data
             if (data.name === undefined) {
@@ -59,7 +58,9 @@ function displayError() {
     const resultContainer = document.getElementById('resultContainer');
     resultContainer.innerHTML = '';
     const resultElement = document.createElement('div');
-    resultElement.innerHTML = `<p>Error: No record has been found, please enter a valid symbol</p>`
+    resultElement.innerHTML = `<div class="error-container">
+                                <p>Error: No record has been found, please enter a valid symbol</p>
+                                </div>`
 
     resultContainer.appendChild(resultElement);
 }
@@ -168,11 +169,11 @@ function handleButtonClick(buttonId) {
                     }
                 },
                 yAxis: [{
+                    opposite: false,
                     title: {
                         text: 'Stock Price'
                     }
                 }, {
-                    opposite: false,
                     title: {
                         text: 'Volume'
                     }
@@ -243,18 +244,4 @@ function convertUnixEpochToDateFormat(unixEpochTime) {
     const formatter = new Intl.DateTimeFormat('en-UK', options);
     const formattedDate = formatter.format(date);
     return formattedDate;
-}
-
-function equalizeTableCellWidths() {
-    console.log('hi')
-    var table = document.querySelectorAll('table');
-    var maxWidth = 0;
-    var cells = table.querySelectorAll('td');
-    cells.forEach(function (cell) {
-        var cellWidth = cell.offsetWidth;
-        maxWidth = Math.max(maxWidth, cellWidth);
-    });
-    cells.forEach(function (cell) {
-        cell.style.width = maxWidth + 'px';
-    });
 }
