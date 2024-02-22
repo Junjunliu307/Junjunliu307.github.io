@@ -152,7 +152,7 @@ function handleButtonClick(buttonId) {
                 },
 
                 title: {
-                    text: `${record.ticker} Stock Prices`
+                    text: `${record.ticker} Stock Price`
                 },
 
                 subtitle: {
@@ -203,6 +203,7 @@ function handleButtonClick(buttonId) {
                     id: 'volume',
                     name: 'Volume',
                     data: volume,
+                    color: 'black',
                     yAxis: 1
                 }]
             });
