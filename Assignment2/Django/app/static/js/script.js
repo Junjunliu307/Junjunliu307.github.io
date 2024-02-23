@@ -155,7 +155,8 @@ function handleButtonClick(buttonId) {
             Highcharts.stockChart('chartContainer', {
 
                 rangeSelector: {
-                    selected: 1
+                    selected: 1,
+                    inputEnabled: false
                 },
 
                 title: {
@@ -174,6 +175,7 @@ function handleButtonClick(buttonId) {
                         }
                     }
                 },
+
                 yAxis: [{
                     opposite: false,
                     title: {
@@ -184,6 +186,14 @@ function handleButtonClick(buttonId) {
                         text: 'Volume'
                     }
                 }],
+                accessibility: {
+                    enabled: false // Disable accessibility
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: true
+                    }
+                },
 
                 series: [{
                     name: `${record.ticker} Stock Price`,
@@ -212,6 +222,7 @@ function handleButtonClick(buttonId) {
                     data: volume,
                     color: 'black',
                     yAxis: 1
+
                 }]
             });
         })();
