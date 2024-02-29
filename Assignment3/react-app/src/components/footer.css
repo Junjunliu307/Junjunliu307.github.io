@@ -1,0 +1,25 @@
+.footer {
+    background-color: #f0f0f0;
+    /* 灰色背景 */
+    color: #333;
+    /* 文字颜色 */
+    position: fixed;
+    /* 固定在页面底部 */
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    /* 宽度占满整个屏幕 */
+    text-align: center;
+    /* 文字居中 */
+    padding: 20px 0;
+    /* 顶部和底部留出空白 */
+}
+
+.footer .content {
+    width: 100%;
+    /* 内容宽度占满整个屏幕 */
+    max-width: 1200px;
+    /* 内容最大宽度 */
+    margin: 0 auto;
+    /* 居中 */
+}

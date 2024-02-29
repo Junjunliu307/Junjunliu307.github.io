@@ -1,0 +1,36 @@
+/* Navbar.css */
+
+.navbar {
+    background-color: blue;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.left {
+    font-size: 1.2em;
+}
+
+.right a {
+    margin-left: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.right a:hover {
+    text-decoration: none;
+}
+
+.nav-link {
+    padding: 5px 10px;
+    margin-right: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 20px;
+}
+
+.nav-link.selected {
+    border-color: white;
+}
