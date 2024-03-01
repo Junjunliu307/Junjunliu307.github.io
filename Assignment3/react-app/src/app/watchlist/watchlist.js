@@ -1,15 +1,11 @@
 import React from 'react';
 import './watchlist.css';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
-function Watchlist() {
+function WatchlistComponent() {
     return (
         <div className="watchlist">
-            <Header />
-            <Footer />
         </div>
     );
 }
 
-export default Watchlist;
+export default WatchlistComponent;

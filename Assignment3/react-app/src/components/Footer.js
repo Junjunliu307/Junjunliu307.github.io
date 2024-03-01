@@ -6,7 +6,6 @@ function Footer() {
         <footer className="footer">
             <div className="content">
                 <p>Powered by <a href="https://finnhub.io/">Finnhub.io</a></p>
-                {/* 可以在这里添加其他页脚信息 */}
             </div>
         </footer>
     );
