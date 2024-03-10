@@ -1,7 +1,7 @@
 import React from 'react';
 import './portfolio.css';
 
-function PortfolioComponent() {
+const PortfolioComponent = () => {
     return (
         <div className="protfolio">
         </div>

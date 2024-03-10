@@ -12,6 +12,7 @@ function App() {
             <Header />
             <Routes>
                 <Route path="" element={<SearchComponent />} />
+                <Route path="/search/:symbol" element={<SearchComponent />} />
                 <Route path="/watchlist" element={<WatchlistComponent />} />
                 <Route path="/portfolio" element={<PortfolioComponent />} />
             </Routes>

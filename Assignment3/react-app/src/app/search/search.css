@@ -3,14 +3,27 @@
 }
 
 .input-group {
+  width: 30%;
   display: inline-flex;
-  border: 2px solid blue;
+  border: 3px solid blue;
   border-radius: 1.5rem;
 }
 
+.search-input {
+  width: 90%;
+  padding: 8px 10px;
+}
+
+.search-input:focus {
+  outline: none;
+  /* 移除默认的焦点样式 */
+}
+
 .dropdown-menu {
+  width: 26%;
+  margin-top: 2%;
   position: absolute;
-  max-height: 150px;
+  max-height: 180px;
   /* 设置最大高度 */
   overflow-y: auto;
   /* 启用垂直滚动 */
@@ -38,3 +51,5 @@
   background-color: #f0f0f0;
   /* 鼠标悬停时的背景色 */
 }
+
+.resultComponet {}

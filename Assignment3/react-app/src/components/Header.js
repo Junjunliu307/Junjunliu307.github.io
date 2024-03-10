@@ -14,7 +14,7 @@ function Header() {
                 <span>Stock Search</span>
             </div>
             <div className="right">
-                <Link to="" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`} onClick={() => handleLinkClick('search')}>Search</Link>
+                <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`} onClick={() => handleLinkClick('search')}>Search</Link>
                 <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`} onClick={() => handleLinkClick('watchlist')}>Watchlist</Link>
                 <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`} onClick={() => handleLinkClick('portfolio')}>Portfolio</Link>
             </div>
