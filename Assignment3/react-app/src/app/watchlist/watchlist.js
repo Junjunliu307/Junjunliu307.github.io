@@ -44,8 +44,8 @@ const WatchlistComponent = () => {
 
     return (
         <div className="watchlist">
-            <h1>My Watchlist</h1>
-            {!loadingResult ? stockData.map((stock, index) => (
+            <p style={{ fontSize: '30px' }}>My Watchlist</p>
+            {!loadingResult ? (stockData.length !== 0 ? stockData.map((stock, index) => (
                 <div key={index} className='stockCard'>
                     <table style={{ width: '100%', tableLayout: 'fixed' }}>
                         <thead>
@@ -67,7 +67,9 @@ const WatchlistComponent = () => {
                     </table>
                 </div>
 
-            )) : (
+            )) : <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 255, 0, 0.3)', borderRadius: '1rem', padding: '0.1% 0% 0.1% 0%' }}>
+                <p>Currently you don't have any stock in your watchlist.</p>
+            </div>) : (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <ClipLoader size={30} color="blue" loading={true} />
                 </div>

@@ -219,7 +219,7 @@ const SearchComponent = () => {
     let stockName = (
       <div className='overviewItem'>
         <p style={{ fontSize: '30px', fontWeight: 'bold', margin: '0px' }}>{stockData.ticker}<button className='favoriteButton' onClick={handleFavorite}>
-          {isFavorite ? <BsStarFill size={25} color={'yellow'} /> : <BsStar size={25} color={'black'} />}
+          {isFavorite ? <BsStarFill size={25} color={'gold'} /> : <BsStar size={25} color={'black'} />}
         </button>
         </p>
         <p style={{ fontSize: '20px', fontWeight: 'bolder', color: 'gray', margin: '0px' }}>{stockData.name}</p>
@@ -272,6 +272,9 @@ const SearchComponent = () => {
             highcharts={Highcharts}
             constructorType={'stockChart'}
             options={{
+              chart: {
+                backgroundColor: '#F5F5F5' // 设置背景色为灰色
+              },
               navigator: {
                 enabled: false // 设置为false以隐藏导航器
               },
@@ -307,7 +310,9 @@ const SearchComponent = () => {
           highcharts={Highcharts}
           constructorType={'stockChart'}
           options={{
-
+            chart: {
+              backgroundColor: '#F5F5F5' // 设置背景色为灰色
+            },
             rangeSelector: {
               selected: 2
             },
@@ -400,19 +405,19 @@ const SearchComponent = () => {
     let insights = (
       <div className='insightsContainer' align='center'>
         <div className='insightsTop'>
-          <table border="0">
-            <caption>Insider Sentiments</caption>
+          <table style={{ borderCollapse: 'collapse', width: '60%' }}>
+            <caption style={{ fontSize: '20px' }}>Insider Sentiments</caption>
             <thead>
-              <tr>
+              <tr style={{ borderBottom: '1px solid black' }}>
                 <th align="center">{stockData.name}</th>
                 <th align="center">MSPR</th>
                 <th align="center">Change</th>
               </tr>
             </thead>
             <tbody>
-              <tr><th align="center">Total</th><td>{MSPRTotal}</td><td>{ChangeTotal}</td></tr>
-              <tr><th align="center">Positive</th><td>{MSPRPositive}</td><td>{ChangePositive}</td></tr>
-              <tr><th align="center">Negative</th><td>{MSPRNegative}</td><td>{ChangeNegative}</td></tr>
+              <tr style={{ borderBottom: '1px solid black' }}><th align="center">Total</th><td align="center">{parseFloat(MSPRTotal).toFixed(2)}</td><td align="center">{parseFloat(ChangeTotal).toFixed(2)}</td></tr>
+              <tr style={{ borderBottom: '1px solid black' }}><th align="center">Positive</th><td align="center">{parseFloat(MSPRPositive).toFixed(2)}</td><td align="center">{parseFloat(ChangePositive).toFixed(2)}</td></tr>
+              <tr style={{ borderBottom: '1px solid black' }}><th align="center">Negative</th><td align="center">{parseFloat(MSPRNegative).toFixed(2)}</td><td align="center">{parseFloat(ChangeNegative).toFixed(2)}</td></tr>
             </tbody>
           </table>
         </div>
@@ -421,15 +426,16 @@ const SearchComponent = () => {
             <HighchartsReact
               highcharts={Highcharts}
               options={{
+                chart: {
+                  type: 'column',
+                  backgroundColor: '#F5F5F5' // 设置背景色为灰色
+                },
                 navigator: {
                   enabled: false // 设置为false以隐藏导航器
                 },
                 rangeSelector: {
                   buttons: [],
                   inputEnabled: false
-                },
-                chart: {
-                  type: 'column'
                 },
                 title: {
                   text: 'Recommendation Trends'
@@ -476,6 +482,9 @@ const SearchComponent = () => {
               highcharts={Highcharts}
               constructorType={'stockChart'}
               options={{
+                chart: {
+                  backgroundColor: '#F5F5F5' // 设置背景色为灰色
+                },
                 navigator: {
                   enabled: false // 设置为false以隐藏导航器
                 },
@@ -491,8 +500,9 @@ const SearchComponent = () => {
                 },
                 yAxis: {
                   title: {
-                    text: 'EPS'
-                  }
+                    text: 'Quarterly EPS'
+                  },
+                  opposite: false
                 },
                 series: [{
                   name: 'Actual EPS',
@@ -544,17 +554,19 @@ const SearchComponent = () => {
                 </a>
 
               </div>}>
-              <p>{selectedNews.source}</p>
-              <p>{convertUnixEpochToDateFormat(selectedNews.datetime)}</p>
-              <p>{selectedNews.headline}</p>
-              <p>{selectedNews.summary}</p>
+              <p style={{ fontSize: '30px', fontWeight: 'bold', margin: '0' }}>{selectedNews.source}</p>
+              <p style={{ fontSize: '15px', color: 'gray', margin: '0' }}>{convertUnixEpochToDateFormat(selectedNews.datetime)}</p>
+              <hr style={{ color: 'gray' }} />
+
+              <p style={{ fontSize: '20px', fontWeight: 'bold' }}>{selectedNews.headline}</p>
+              <p style={{ margin: '0' }}>{selectedNews.summary}</p>
               <p>For more datails click <a href={selectedNews.url} target="_blank" rel="noreferrer">here</a></p>
             </Modal>
 
             <Modal open={dealModalVisible} title={symbol} onCancel={() => { setDealModalVisible(false) }}
               footer={dealState === 'buy' ?
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {stockData.c * dealInput}</p><Button style={{ backgroundColor: 'green', color: 'white', opacity: dealInput * stockData.c > parseFloat(userData.money) ? '0.5' : '1' }} onClick={handleDeal} disabled={dealInput * stockData.c > parseFloat(userData.money)}>Buy</Button>
-                </div> : <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {stockData.c * dealInput}</p><Button style={{ backgroundColor: 'red', color: 'white', opacity: dealInput > userData.portfolio[symbol].length ? '0.5' : '1' }} onClick={handleDeal} disabled={dealInput > userData.portfolio[symbol].length}>Sell</Button></div>}>
+                </div> : <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {stockData.c * dealInput}</p><Button style={{ backgroundColor: 'red', color: 'white', opacity: userData.portfolio[symbol] && dealInput > userData.portfolio[symbol].length ? '0.5' : '1' }} onClick={handleDeal} disabled={userData.portfolio[symbol] && dealInput > userData.portfolio[symbol].length}>Sell</Button></div>}>
               <div style={{ border: '1px solid #ccc', borderLeft: 'none', borderRight: 'none' }}>
                 <p>Current Price: {stockData.c}</p>
                 <p>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</p>
@@ -564,7 +576,7 @@ const SearchComponent = () => {
                   onChange={handleInputChange}
                 /></p>
                 {(dealState === 'buy' && dealInput * stockData.c > parseFloat(userData.money)) ? <p style={{ color: 'red' }}>Not enough money in wallet!</p> : null}
-                {(dealState === 'sell' && dealInput > userData.portfolio[symbol].length) ? <p style={{ color: 'red' }}>You cannot sell the stocks that you don't have!</p> : null}
+                {(dealState === 'sell' && userData.portfolio[symbol] && dealInput > userData.portfolio[symbol].length) ? <p style={{ color: 'red' }}>You cannot sell the stocks that you don't have!</p> : null}
               </div>
             </Modal>
 
@@ -584,9 +596,10 @@ const SearchComponent = () => {
             </div >
           </div>
         ) : (
-          <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 0, 0, 0.3)', borderRadius: '1rem' }}>
-            <p>No data found, Please enter a valid Ticker</p>
-          </div>
+          window.location.pathname !== '/search/' ?
+            <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 0, 0, 0.3)', borderRadius: '1rem', padding: '0.1% 0% 0.1% 0%' }}>
+              <p>No data found, Please enter a valid Ticker</p>
+            </div> : null
         )}
       </div >
     )
@@ -609,7 +622,7 @@ const SearchComponent = () => {
         <button style={{ border: 'none', background: 'transparent' }} onClick={handleSearch}><FaSearch /></button>
         <button style={{ border: 'none', background: 'transparent' }} onClick={handleClear}><FaTimes /></button>
       </div>
-      {window.location.pathname === '/search/' ? <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 0, 0, 0.3)', borderRadius: '1rem', width: '80%', margin: 'auto' }}>
+      {window.location.pathname === '/search/' ? <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 0, 0, 0.3)', borderRadius: '1rem', width: '80%', margin: 'auto', padding: '0.1% 0% 0.1% 0%', marginTop: '3%' }}>
         <p>Please enter a valid Ticker</p>
       </div> : null}
       <Alert show={noticeVisible} variant="success" onClose={() => setNoticeVisible(false)} style={{ background: noticeColor, width: '80%', margin: 'auto', display: 'flex', justifyContent: 'space-between' }}>

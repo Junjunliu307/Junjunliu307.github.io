@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './header.css';
 import { Link, useLocation } from 'react-router-dom';
+import { Collapse } from 'react-bootstrap';
 
 function Header() {
     const [selectedLink, setSelectedLink] = useState('search');
@@ -24,16 +25,20 @@ function Header() {
         }
     }, [location.pathname]);
 
+
     return (
         <nav className="navbar">
             <div className="left">
                 <span>Stock Search</span>
             </div>
-            <div className="right">
-                <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`}>Search</Link>
-                <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`}>Watchlist</Link>
-                <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`}>Portfolio</Link>
-            </div>
+            <Collapse in={true}>
+                <div className="right">
+                    <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`}>Search</Link>
+                    <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`}>Watchlist</Link>
+                    <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`}>Portfolio</Link>
+                </div>
+            </Collapse>
+
         </nav>
     );
 }

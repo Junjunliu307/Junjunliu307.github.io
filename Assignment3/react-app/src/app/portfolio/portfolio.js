@@ -77,8 +77,9 @@ const PortfolioComponent = () => {
 
     return (
         <div className="portfolio">
-            <h1>My Portfolio</h1>
-            <h2>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</h2>
+            <p style={{ fontSize: '30px' }}>My Portfolio</p>
+            <p style={{ fontSize: '20px' }}>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</p>
+
             <div style={{ textAlign: 'center' }}>
                 <Alert show={noticeVisible} variant="success" onClose={() => setNoticeVisible(false)} style={{ background: noticeColor, width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-between' }}>
                     <div style={{ flex: '1' }}>{noticeContent}</div>
@@ -89,7 +90,6 @@ const PortfolioComponent = () => {
                     </div>
                 </Alert>
             </div>
-
             {selectedStock.ticker ? <Modal open={dealModalVisible} title={selectedStock.ticker} onCancel={() => { setDealModalVisible(false) }}
                 footer={dealState === 'buy' ?
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {selectedStock.c * dealInput}</p><Button style={{ backgroundColor: 'green', color: 'white', opacity: dealInput * selectedStock.c > parseFloat(userData.money) ? '0.5' : '1' }} onClick={handleDeal} disabled={dealInput * selectedStock.c > parseFloat(userData.money)}>Buy</Button>
@@ -106,7 +106,7 @@ const PortfolioComponent = () => {
                     {(dealState === 'sell' && dealInput > userData.portfolio[selectedStock.ticker].length) ? <p style={{ color: 'red' }}>You cannot sell the stocks that you don't have!</p> : null}
                 </div>
             </Modal> : null}
-            {!loadingResult ? stockData.map((stock, index) => (
+            {!loadingResult ? (stockData.length !== 0 ? stockData.map((stock, index) => (
                 <div key={index} className='stockCard'>
                     <table style={{ width: '100%', tableLayout: 'fixed' }}>
                         <thead>
@@ -142,7 +142,9 @@ const PortfolioComponent = () => {
                     </table>
                 </div>
 
-            )) : (
+            )) : <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 255, 0, 0.3)', borderRadius: '1rem', padding: '0.1% 0% 0.1% 0%' }}>
+                <p>Currently you don't have any stock.</p>
+            </div>) : (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <ClipLoader size={30} color="blue" loading={true} />
                 </div>

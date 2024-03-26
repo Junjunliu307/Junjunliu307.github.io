@@ -59,18 +59,15 @@
 }
 
 .stockOverview {
-  text-align: center;
-  display: inline-flex;
-  width: 70%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 80%;
+  margin: auto;
 }
 
-.overviewItem {
-  margin-right: 10%;
-}
+.overviewItem {}
 
-.overviewItem:last-child {
-  margin-right: 0%;
-}
+.overviewItem:last-child {}
 
 .favoriteButton {
   border: none;
