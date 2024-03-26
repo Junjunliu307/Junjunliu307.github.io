@@ -1,22 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './header.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
     const [selectedLink, setSelectedLink] = useState('search');
+    const location = useLocation();
 
-    const handleLinkClick = (linkName) => {
-        setSelectedLink(linkName);
-    };
+    useEffect(() => {
+        // 获取当前路径
+        const currentPath = location.pathname;
+
+        // 根据当前路径设置选中的链接
+        switch (currentPath) {
+            case '/watchlist':
+                setSelectedLink('watchlist');
+                break;
+            case '/portfolio':
+                setSelectedLink('portfolio');
+                break;
+            default:
+                setSelectedLink('search');
+                break;
+        }
+    }, [location.pathname]);
+
     return (
         <nav className="navbar">
             <div className="left">
                 <span>Stock Search</span>
             </div>
             <div className="right">
-                <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`} onClick={() => handleLinkClick('search')}>Search</Link>
-                <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`} onClick={() => handleLinkClick('watchlist')}>Watchlist</Link>
-                <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`} onClick={() => handleLinkClick('portfolio')}>Portfolio</Link>
+                <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`}>Search</Link>
+                <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`}>Watchlist</Link>
+                <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`}>Portfolio</Link>
             </div>
         </nav>
     );

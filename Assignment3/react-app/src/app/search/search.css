@@ -52,4 +52,137 @@
   /* 鼠标悬停时的背景色 */
 }
 
-.resultComponet {}
+.resultComponet {
+  margin-left: 10%;
+  margin-top: 3%;
+  width: 80%;
+}
+
+.stockOverview {
+  text-align: center;
+  display: inline-flex;
+  width: 70%;
+}
+
+.overviewItem {
+  margin-right: 10%;
+}
+
+.overviewItem:last-child {
+  margin-right: 0%;
+}
+
+.favoriteButton {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.stockDetail {}
+
+.buttonContainer {
+  margin-top: 5%;
+  width: 100%;
+  display: flex;
+  border: none;
+}
+
+.buttonContainer button {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: none;
+  width: 40%;
+
+  padding: 10px 0px 10px 0px
+}
+
+.buttonContainer button:hover {
+  background-color: #F5F5F5;
+}
+
+.buttonContainer button.clicked {
+  border-bottom: 1px solid #000;
+}
+
+.summary {
+  display: flex;
+}
+
+.summaryLeft {
+  width: 50%;
+}
+
+.summaryLeft p {
+  font-size: 14px;
+}
+
+.summaryLeft a {
+  font-size: 14px;
+}
+
+.summaryRight {
+  width: 50%;
+}
+
+.newsContainer {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 将卡片分为两列 */
+  gap: 20px;
+  /* 设置卡片之间的间距 */
+}
+
+.newsCard {
+  align-items: center;
+  cursor: pointer;
+  border-color: #020101;
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+}
+
+.newsCard img {
+  width: 100px;
+  height: auto;
+  padding: 10px 10px 10px 10px;
+}
+
+.newsCard p {
+  font-size: 15px;
+  margin: auto;
+}
+
+.newsModalFooter {
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+}
+
+.shareButton {
+  padding-right: 5%;
+}
+
+.shareButton img {
+  max-width: 10%;
+  max-height: 10%;
+}
+
+.chartsContainer {}
+
+.insightsContainer {}
+
+.insightsTop {}
+
+.insightsBottom {
+  display: flex;
+}
+
+.recommendationTrends {
+  width: 50%;
+}
+
+.epsSurprises {
+  width: 50%;
+}

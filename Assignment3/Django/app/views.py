@@ -15,14 +15,23 @@ def search(request):
         return JsonResponse(res)
     res.update(finnhub_client.quote(symbol=sym))
     res.update(finnhub_client.recommendation_trends(symbol=sym)[0])
+    res.update({'peers':finnhub_client.company_peers(symbol=sym)})
     aggs = []
-    for a in polygon_client.list_aggs(ticker= sym, multiplier=1, timespan="day", from_=str(current_date - timedelta(days=183)), to=str(current_date)):
-        aggs.append([a.timestamp,a.close,a.volume])
+    for a in polygon_client.list_aggs(ticker=sym, multiplier=1, timespan="hour", from_=str(current_date - timedelta(days=3)), to=str(current_date)):
+        aggs.append([a.timestamp,a.close])
+    res.update({'hourlyData': aggs})
+    aggs = []
+    for a in polygon_client.list_aggs(ticker= sym, multiplier=1, timespan="day", from_=str(current_date - timedelta(days=2*365)), to=str(current_date)):
+        aggs.append([a.timestamp,a.open,a.high,a.low,a.close,a.volume])
     res.update({'chartData':aggs})
     news = finnhub_client.company_news(symbol=sym, _from=str(current_date - timedelta(days=30)), to=str(current_date))
     for i in range(len(news)-1,-1,-1):
         if news[i]["image"] == "" or news[i]["url"] == "" or news[i]["headline"] == "" or news[i]["datetime"] == "":
             del news[i]
-    news = news[:5] if len(news)>5 else news
+    news = news[:30] if len(news)>30 else news
     res.update({'latestNews':news})
+    res.update({'insiderSentiment':finnhub_client.stock_insider_sentiment(symbol = sym, _from = '2021-01-01', to = str(current_date))})
+    res.update({'recommendationData':finnhub_client.recommendation_trends(symbol = sym)})
+    res.update({'earnings': finnhub_client.company_earnings(symbol = sym, limit=4)})
+    print(finnhub_client.company_earnings(symbol = sym, limit=4))
     return JsonResponse(res)

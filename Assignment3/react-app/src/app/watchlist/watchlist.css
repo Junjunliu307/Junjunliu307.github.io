@@ -1,0 +1,9 @@
+.watchlist {
+    width: 80%;
+    margin: auto;
+}
+
+.stockCard {
+    margin-top: 2%;
+    border: 1px solid #ccc;
+}
