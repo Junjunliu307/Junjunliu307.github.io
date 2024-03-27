@@ -35,6 +35,7 @@ const SearchComponent = () => {
   const [selectedButton, setSelectedButton] = useState('summary');
   const [newsModalVisible, setNewsModalVisible] = useState(false);
   const [dealModalVisible, setDealModalVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [dealState, setDealState] = useState('')
   const [selectedNews, setSelectedNews] = useState(null);
   const navigate = useNavigate()
@@ -102,6 +103,17 @@ const SearchComponent = () => {
         })
         .catch(error => console.error('Error:', error));
     }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [symbol])
 
   const ResultComponent = () => {
@@ -242,8 +254,8 @@ const SearchComponent = () => {
       </div>
     )
     let summary = (
-      <div className='summary'>
-        <div className='summaryLeft'>
+      <div className={isMobile ? 'summaryMobile' : 'summary'}>
+        <div className={isMobile ? 'summaryLeftMobile' : 'summaryLeft'}>
           <div style={{ textAlign: 'left' }}>
             <p><span style={{ fontWeight: 'bold' }}>High Price: </span>{stockData.h}</p>
             <p><span style={{ fontWeight: 'bold' }}>Low Price: </span>{stockData.l}</p>
@@ -267,7 +279,7 @@ const SearchComponent = () => {
             </div>
           </div>
         </div>
-        <div className='summaryRight'>
+        <div className={isMobile ? 'summaryMobileRight' : 'summaryRight'}>
           <HighchartsReact
             highcharts={Highcharts}
             constructorType={'stockChart'}
@@ -294,7 +306,7 @@ const SearchComponent = () => {
       </div >
     )
     let news = (
-      <div className='newsContainer'>
+      <div className={isMobile ? 'newsContainerMobile' : 'newsContainer'}>
         {stockData.latestNews.map((news, index) => (
           <div className='newsCard' key={index} onClick={() => handleNewsClick(news)}>
             <img src={news.image} alt='newsImage'></img>
@@ -421,8 +433,8 @@ const SearchComponent = () => {
             </tbody>
           </table>
         </div>
-        <div className='insightsBottom'>
-          <div className='recommendationTrends'>
+        <div className={isMobile ? 'insightsBottomMobile' : 'insightsBottom'}>
+          <div className={isMobile ? 'recommendationTrendsMobile' : 'recommendationTrends'}>
             <HighchartsReact
               highcharts={Highcharts}
               options={{
@@ -454,30 +466,30 @@ const SearchComponent = () => {
                   }
                 },
                 series: [{
+                  name: 'Strong Buy',
+                  color: 'green',
+                  data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.strongBuy])
+                }, {
                   name: 'Buy',
-                  color: '#7cb5ec',
+                  color: '#3CB371',
                   data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.buy])
                 }, {
                   name: 'Hold',
-                  color: '#434348',
+                  color: '#B8860B',
                   data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.hold])
                 }, {
                   name: 'Sell',
-                  color: '#90ed7d',
+                  color: '#FF6347',
                   data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.sell])
                 }, {
-                  name: 'Strong Buy',
-                  color: '#f7a35c',
-                  data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.strongBuy])
-                }, {
                   name: 'Strong Sell',
-                  color: '#8085e9',
+                  color: '#8B4513',
                   data: stockData.recommendationData.map(point => [new Date(point.period).getTime(), point.strongSell])
                 }]
               }}
             />
           </div>
-          <div className='epsSurprises'>
+          <div className={isMobile ? 'epsSurprisesMobile' : 'epsSurprises'}>
             <HighchartsReact
               highcharts={Highcharts}
               constructorType={'stockChart'}

@@ -29,6 +29,7 @@
     text-decoration: none;
     border: 1px solid transparent;
     border-radius: 20px;
+    color: white;
 }
 
 .nav-link.selected {

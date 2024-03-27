@@ -106,11 +106,23 @@
   display: flex;
 }
 
+.summaryMobile {
+  flex-direction: row;
+}
+
 .summaryLeft {
   width: 50%;
 }
 
+.summaryLeftMobile {
+  width: 100%;
+}
+
 .summaryLeft p {
+  font-size: 14px;
+}
+
+.summaryLeftMobile p {
   font-size: 14px;
 }
 
@@ -118,8 +130,16 @@
   font-size: 14px;
 }
 
+.summaryLeftMobile a {
+  font-size: 14px;
+}
+
 .summaryRight {
   width: 50%;
+}
+
+.summaryRightMobile {
+  width: 100%;
 }
 
 .newsContainer {
@@ -127,6 +147,15 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   /* 将卡片分为两列 */
+  gap: 20px;
+  /* 设置卡片之间的间距 */
+}
+
+.newsContainerMobile {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  /* 将卡片分为一列 */
   gap: 20px;
   /* 设置卡片之间的间距 */
 }
@@ -176,10 +205,22 @@
   display: flex;
 }
 
+.insightsBottomMobile {
+  flex-direction: row;
+}
+
 .recommendationTrends {
   width: 50%;
 }
 
+.recommendationTrendsMobile {
+  width: 100%;
+}
+
 .epsSurprises {
   width: 50%;
+}
+
+.epsSurprisesMobile {
+  width: 100%;
 }
