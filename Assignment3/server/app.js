@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const PORT = 8000;
 const finnhub = require('finnhub');
 const axios = require('axios');
@@ -10,6 +11,9 @@ const moneyId = new ObjectId('65fbf21b6a0ac27aa1b3746e');
 const watchlistId = new ObjectId('65fc75512c7bfc52b5721eaa');
 const portfolioId = new ObjectId('65fc63331640e08dff2f7977');
 
+
+// 设置静态文件目录
+app.use(express.static(path.join(__dirname, 'build')));
 // // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
