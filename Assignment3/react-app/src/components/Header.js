@@ -52,7 +52,7 @@ function Header() {
                 {
                     !isMobile ?
                         <div className="right">
-                            <Link to="/" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`}>Search</Link>
+                            <Link to="/search/home" className={`nav-link ${selectedLink === 'search' ? 'selected' : ''}`}>Search</Link>
                             <Link to="/watchlist" className={`nav-link ${selectedLink === 'watchlist' ? 'selected' : ''}`}>Watchlist</Link>
                             <Link to="/portfolio" className={`nav-link ${selectedLink === 'portfolio' ? 'selected' : ''}`}>Portfolio</Link>
                         </div> : <div className="right">

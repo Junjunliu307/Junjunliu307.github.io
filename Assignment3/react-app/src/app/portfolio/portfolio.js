@@ -11,7 +11,6 @@ const PortfolioComponent = () => {
     const [loadingResult, setLoadingResult] = useState(true);
     const [userData, setUserData] = useState({});
     const [stockData, setStockData] = useState([]);
-    const [reLoadFlag, setReLoadFlag] = useState(true)
     const [dealState, setDealState] = useState('')
     const [dealModalVisible, setDealModalVisible] = useState(false);
     const [dealInput, setDealInput] = useState(0)
@@ -36,30 +35,35 @@ const PortfolioComponent = () => {
             setNoticeVisible(false);
         }, 3000)
     }
-    const handleDeal = () => {
+    const handleDeal = async () => {
         var url = ''
         if (dealState === 'buy') {
             url = `http://localhost:8000/makeDeal?symbol=${selectedStock.ticker}&num=${dealInput}&price=${selectedStock.c}`
         } else if (dealState === 'sell') {
             url = `http://localhost:8000/makeDeal?symbol=${selectedStock.ticker}&num=-${dealInput}&price=${selectedStock.c}`
         }
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                setUserData(data)
-                setDealModalVisible(false)
-                dealState === 'buy' ? showNotice(`${selectedStock.ticker} bought successfully`, 'rgba(0, 255, 0, 0.3)') : showNotice(`${selectedStock.ticker} sold successfully`, 'rgba(255, 0, 0, 0.3)')
-            })
-            .catch(error => console.error('Error:', error));
+        const userDataResponse = await fetch(url)
+        const userDataJson = await userDataResponse.json();
+        setUserData(userDataJson);
+        setDealModalVisible(false)
+        dealState === 'buy' ? showNotice(`${selectedStock.ticker} bought successfully`, 'rgba(0, 255, 0, 0.3)') : showNotice(`${selectedStock.ticker} sold successfully`, 'rgba(255, 0, 0, 0.3)')
+        var temp = []
+        for (const element in userDataJson.portfolio) {
+            const stockResponse = await fetch(`http://localhost:8000/queryStock?symbol=${element}&tokenF=${tokenF}`);
+            const singleStock = await stockResponse.json();
+            temp = [...temp, singleStock]
+        }
+        setStockData(temp)
+        setSelectedStock({})
     }
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userDataResponse = await fetch(`http://localhost:8000/queryUserData`);
-                const userData = await userDataResponse.json();
-                setUserData(userData);
+                const userDataJson = await userDataResponse.json();
+                setUserData(userDataJson);
                 var temp = []
-                for (const element in userData.portfolio) {
+                for (const element in userDataJson.portfolio) {
                     const stockResponse = await fetch(`http://localhost:8000/queryStock?symbol=${element}&tokenF=${tokenF}`);
                     const singleStock = await stockResponse.json();
                     temp = [...temp, singleStock]
@@ -68,19 +72,14 @@ const PortfolioComponent = () => {
                 setLoadingResult(false);
             } catch (error) {
                 console.error('Error:', error);
-                setLoadingResult(false);
             }
         };
-
         fetchData();
-    }, [reLoadFlag]);
+    }, []);
 
     return (
         <div className="portfolio">
-            <p style={{ fontSize: '30px' }}>My Portfolio</p>
-            <p style={{ fontSize: '20px' }}>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</p>
-
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', marginTop: '2%' }}>
                 <Alert show={noticeVisible} variant="success" onClose={() => setNoticeVisible(false)} style={{ background: noticeColor, width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-between' }}>
                     <div style={{ flex: '1' }}>{noticeContent}</div>
                     <div>
@@ -90,10 +89,14 @@ const PortfolioComponent = () => {
                     </div>
                 </Alert>
             </div>
+            <p style={{ fontSize: '30px' }}>My Portfolio</p>
+            <p style={{ fontSize: '20px' }}>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</p>
             {selectedStock.ticker ? <Modal open={dealModalVisible} title={selectedStock.ticker} onCancel={() => { setDealModalVisible(false) }}
                 footer={dealState === 'buy' ?
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {selectedStock.c * dealInput}</p><Button style={{ backgroundColor: 'green', color: 'white', opacity: dealInput * selectedStock.c > parseFloat(userData.money) ? '0.5' : '1' }} onClick={handleDeal} disabled={dealInput * selectedStock.c > parseFloat(userData.money)}>Buy</Button>
-                    </div> : <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {selectedStock.c * dealInput}</p><Button style={{ backgroundColor: 'red', color: 'white', opacity: dealInput > userData.portfolio[selectedStock.ticker].length ? '0.5' : '1' }} onClick={handleDeal} disabled={dealInput > userData.portfolio[selectedStock.ticker].length}>Sell</Button></div>}>
+                    </div> : <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>Total: {selectedStock.c * dealInput}</p><Button style={{ backgroundColor: 'red', color: 'white', opacity: userData.portfolio[selectedStock.ticker] && dealInput > userData.portfolio[selectedStock.ticker].length ? '0.5' : '1' }}
+                        onClick={handleDeal} disabled={userData.portfolio[selectedStock.ticker] && dealInput > userData.portfolio[selectedStock.ticker].length}>Sell</Button></div>}>
+
                 <div style={{ border: '1px solid #ccc', borderLeft: 'none', borderRight: 'none' }}>
                     <p>Current Price: {selectedStock.c}</p>
                     <p>Money in Wallet: ${parseFloat(userData.money).toFixed(2)}</p>
@@ -103,7 +106,7 @@ const PortfolioComponent = () => {
                         onChange={handleInputChange}
                     /></p>
                     {(dealState === 'buy' && dealInput * selectedStock.c > parseFloat(userData.money)) ? <p style={{ color: 'red' }}>Not enough money in wallet!</p> : null}
-                    {(dealState === 'sell' && dealInput > userData.portfolio[selectedStock.ticker].length) ? <p style={{ color: 'red' }}>You cannot sell the stocks that you don't have!</p> : null}
+                    {(dealState === 'sell' && userData.portfolio[selectedStock.ticker] && dealInput > userData.portfolio[selectedStock.ticker].length) ? <p style={{ color: 'red' }}>You cannot sell the stocks that you don't have!</p> : null}
                 </div>
             </Modal> : null}
             {!loadingResult ? (stockData.length !== 0 ? stockData.map((stock, index) => (
@@ -111,7 +114,7 @@ const PortfolioComponent = () => {
                     <table style={{ width: '100%', tableLayout: 'fixed' }}>
                         <thead>
                             <tr>
-                                <td colSpan={4} style={{ borderBottom: '1px solid black', backgroundColor: '#F5F5F5' }}>{stock.ticker} {stock.name}</td>
+                                <td colSpan={4} style={{ borderBottom: '1px solid black', backgroundColor: '#F5F5F5' }}><div><p style={{ fontWeight: 'bold', display: 'inline' }}>{stock.ticker}</p><p style={{ fontWeight: 'bold', color: 'gray', display: 'inline' }}> {stock.name}</p></div></td>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,8 +122,8 @@ const PortfolioComponent = () => {
                                 <td>Quantity:</td>
                                 <td>{userData.portfolio[stock.ticker].length}</td>
                                 <td>Change:</td>
-                                <td><p style={{ color: userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c < 0 ? 'green' : (userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c > 0 ? 'red' : 'black') }}>{userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c > 0 ? <BiCaretDown style={{ color: 'red' }} />
-                                    : (userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c < 0 ? <BiCaretUp style={{ color: 'green' }} /> : null)}{Math.abs(userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c).toFixed(2)}</p></td>
+                                <td><p style={{ color: userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c < 0 ? 'green' : (userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c > 0 ? 'red' : 'black') }}>{userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c > 0 ? <BiCaretUp style={{ color: 'red' }} />
+                                    : (userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c < 0 ? <BiCaretDown style={{ color: 'green' }} /> : null)}{Math.abs(userData.portfolio[stock.ticker].reduce((accumulator, currentValue) => accumulator + currentValue, 0) / userData.portfolio[stock.ticker].length - stock.c).toFixed(2)}</p></td>
                             </tr>
                             <tr>
                                 <td>Avg. Cost / Share:</td>
@@ -141,7 +144,6 @@ const PortfolioComponent = () => {
                         </tbody>
                     </table>
                 </div>
-
             )) : <div style={{ textAlign: 'center', backgroundColor: 'rgba(255, 255, 0, 0.3)', borderRadius: '1rem', padding: '0.1% 0% 0.1% 0%' }}>
                 <p>Currently you don't have any stock.</p>
             </div>) : (

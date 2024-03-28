@@ -41,7 +41,8 @@ const SearchComponent = () => {
   const navigate = useNavigate()
   const { symbol } = useParams()
 
-  var singleRequest = true //use to avoid repeat effect
+  var singleRequest = true
+  var tempData = {}
   const handleClear = () => {
     if (inputValue) {
       setInputValue('');
@@ -81,13 +82,14 @@ const SearchComponent = () => {
     }, 3000)
   }
   useEffect(() => {
-    if (symbol && singleRequest) {
+    const fetchData = async () => {
       setLoadingResult(true)
       singleRequest = !singleRequest
       setStockData({})
       fetch(`http://127.0.0.1:8000/search?symbol=${symbol}&tokenF=${tokenF}&tokenP=${tokenP}`)
         .then(response => response.json())
         .then(data => {
+          tempData = data
           setStockData(data)
           setSelectedNews(data.latestNews[0])
           setShowSearchResultComponent(true)
@@ -103,6 +105,9 @@ const SearchComponent = () => {
         })
         .catch(error => console.error('Error:', error));
     }
+    if (symbol && singleRequest) {
+      fetchData()
+    }
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -111,8 +116,20 @@ const SearchComponent = () => {
 
     window.addEventListener('resize', handleResize);
 
+    const updateData = async () => {
+      if (symbol && tempData.t && (Math.abs(Date.now() - tempData.t * 1000) <= 60 * 1000)) {
+        const response = await fetch(`http://localhost:8000/queryStock?symbol=${symbol}&tokenF=${tokenF}`);
+        const updateData = await response.json()
+        setStockData({ ...tempData, ...updateData })
+      }
+    };
+    const intervalId = setInterval(() => {
+      updateData();
+    }, 15000);
+
     return () => {
       window.removeEventListener('resize', handleResize);
+      clearInterval(intervalId)
     };
   }, [symbol])
 
@@ -223,7 +240,7 @@ const SearchComponent = () => {
     }
 
     // 提取日期、实际 EPS 和估计 EPS 列表
-    var dates = stockData.earnings.map(item => item.period);
+    var dates = stockData.earnings.map(item => item.period.substring(0, 10));
     var actualEPS = stockData.earnings.map(item => item.actual);
     var estimateEPS = stockData.earnings.map(item => item.estimate);
 
@@ -300,6 +317,7 @@ const SearchComponent = () => {
               series: [{
                 data: stockData.hourlyData
               },]
+
             }}
           />
         </div>
@@ -492,10 +510,10 @@ const SearchComponent = () => {
           <div className={isMobile ? 'epsSurprisesMobile' : 'epsSurprises'}>
             <HighchartsReact
               highcharts={Highcharts}
-              constructorType={'stockChart'}
               options={{
                 chart: {
-                  backgroundColor: '#F5F5F5' // 设置背景色为灰色
+                  backgroundColor: '#F5F5F5', // 设置背景色为灰色
+                  type: 'line'
                 },
                 navigator: {
                   enabled: false // 设置为false以隐藏导航器
@@ -517,15 +535,15 @@ const SearchComponent = () => {
                   opposite: false
                 },
                 series: [{
-                  name: 'Actual EPS',
-                  type: 'spline',
-                  color: 'blue',
-                  data: actualEPS
+                  name: 'Actual',
+                  // color: 'blue',
+                  data: actualEPS,
+                  type: 'spline'
                 }, {
-                  name: 'Estimate EPS',
-                  type: 'spline',
-                  color: 'black',
-                  data: estimateEPS
+                  name: 'Estimate',
+                  // color: 'black',
+                  data: estimateEPS,
+                  type: 'spline'
                 }]
               }}
             />
@@ -645,7 +663,7 @@ const SearchComponent = () => {
           </button>
         </div>
       </Alert>
-      {loadingResult && <div><ClipLoader size={15} color="#blue" loading={true} /></div>}
+      {loadingResult && <div><ClipLoader size={30} color="blue" loading={true} /></div>}
       {showSearchResultComponent && <ResultComponent />}
     </div >
   );

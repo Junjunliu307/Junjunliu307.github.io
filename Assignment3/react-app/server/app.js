@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 8000; // 你可以选择任何你喜欢的端口号
+const PORT = 8000;
 const finnhub = require('finnhub');
 const axios = require('axios');
 const cors = require('cors');
@@ -25,27 +25,6 @@ async function connectToDatabase() {
     } catch (error) {
         console.error('Error connecting to database:', error);
     }
-    // const databasesList = await client.db().admin().listDatabases();
-    // console.log('Databases:');
-
-    // const database = client.db('user_data');
-    // const collection = database.collection('junjunliu');
-    // collection.deleteOne({ _id: watchlistId })
-    // collection.insertOne({ watchlist: [] })
-    // collection.insertOne({ portfolio: {} })
-    // collection.deleteOne({ _id: new ObjectId('65fc5bcd40cfb0410b78fe15') })
-    // collection.insertOne({ money: 0 })
-
-    // const documents = await collection.find({}).toArray();
-    // console.log('Documents in the collection:');
-    // console.log(documents);
-    // databasesList.databases.forEach(db => console.log(db.name));
-    // await database.dropCollection('junjunliu');
-    // await database.dropCollection('money');
-    // await database.createCollection('junjunliu');
-    // const collectionsList = await database.listCollections().toArray();
-    // console.log('Collections in user_data:');
-    // collectionsList.forEach(collection => console.log(collection.name));
 
 }
 connectToDatabase();
@@ -95,9 +74,14 @@ app.get('/search', async (req, res) => {
             });
 
             const insiderSentimentPromise = new Promise((resolve, reject) => {
-                finnhubClient.insiderSentiment(sym, '2021-01-01', currentDate.toLocaleDateString('af'), (error, data, response) => {
-                    stockData = { ...stockData, 'insiderSentiment': data }; resolve();
-                });
+                axios.get(`https://finnhub.io/api/v1/stock/insider-sentiment?symbol=${sym}&from=2022-01-01 &token=${tokenF}`)
+                    .then(response => {
+                        stockData = { ...stockData, 'insiderSentiment': response.data };
+                        resolve();
+                    })
+                // finnhubClient.insiderSentiment(sym, '2021-01-01', currentDate.toLocaleDateString('af'), (error, data, response) => {
+                //     stockData = { ...stockData, 'insiderSentiment': data }; resolve();
+                // });
             });
 
             const recommendationTrendsPromise = new Promise((resolve, reject) => {
