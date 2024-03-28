@@ -3,6 +3,7 @@ const app = express();
 const PORT = 8000;
 const finnhub = require('finnhub');
 const axios = require('axios');
+const path = require('path');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://junjunliu307:DYGlpfEkzhKxtxXj@cluster0.icrv0bq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -22,6 +23,7 @@ const client = new MongoClient(uri, {
 
 async function connectToDatabase() {
     try {
+        console.log(__dirname)
         await client.connect();
     } catch (error) {
         console.error('Error connecting to database:', error);
@@ -31,7 +33,12 @@ async function connectToDatabase() {
 connectToDatabase();
 
 app.use(cors());
-// 添加一个路由，处理前端发送的 GET 请求
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 app.get('/search', async (req, res) => {
     try {
         const sym = req.query.symbol
