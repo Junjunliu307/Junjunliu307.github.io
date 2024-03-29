@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 const finnhub = require('finnhub');
 const axios = require('axios');
 const path = require('path');
@@ -259,7 +259,6 @@ app.get('/queryStock', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
-
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
