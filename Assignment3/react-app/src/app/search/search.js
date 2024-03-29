@@ -639,7 +639,7 @@ const SearchComponent = () => {
       <p style={{ fontSize: '30px' }}>STOCK SEARCH</p>
       <div className="input-group">
         <input className="search-input" type="text" value={inputValue} placeholder="Enter stock ticker symbol" onChange={handleChange} style={{ border: 'none', borderRadius: '1.5rem' }} />
-        <ul className="dropdown-menu">
+        <ul className={isMobile ? "dropdown-menu-mobile" : "dropdown-menu"}>
           {suggestions.map((item, index) => (
             <li key={index} onClick={() => handleClick(item.symbol)}>{item.symbol + " | " + item.description}</li>
           ))}

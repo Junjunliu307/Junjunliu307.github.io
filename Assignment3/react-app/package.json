@@ -19,6 +19,7 @@
     "finnhub": "^1.2.18",
     "highcharts": "^11.4.0",
     "highcharts-react-official": "^3.2.1",
+    "mongodb": "^6.5.0",
     "polygon.io": "^2.1.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",

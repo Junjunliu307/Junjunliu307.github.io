@@ -12,7 +12,7 @@ const watchlistId = new ObjectId('65fc75512c7bfc52b5721eaa');
 const portfolioId = new ObjectId('65fc63331640e08dff2f7977');
 
 
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -23,7 +23,6 @@ const client = new MongoClient(uri, {
 
 async function connectToDatabase() {
     try {
-        console.log(__dirname)
         await client.connect();
     } catch (error) {
         console.error('Error connecting to database:', error);
