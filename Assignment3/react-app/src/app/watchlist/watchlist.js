@@ -11,7 +11,7 @@ const WatchlistComponent = () => {
     const [stockData, setStockData] = useState([]);
     const [reLoadFlag, setReLoadFlag] = useState(true)
     const handleDelete = (ticker) => {
-        fetch(`http://localhost:8000/handleWatchList?symbol=${ticker}`)
+        fetch(`/handleWatchList?symbol=${ticker}`)
             .then(response => response.json())
             .then(data => {
                 setReLoadFlag(!reLoadFlag)
@@ -21,13 +21,13 @@ const WatchlistComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userDataResponse = await fetch(`http://localhost:8000/queryUserData`);
+                const userDataResponse = await fetch(`/queryUserData`);
                 const userData = await userDataResponse.json();
                 setUserData(userData);
                 var temp = []
 
                 for (const element of userData.watchlist) {
-                    const stockResponse = await fetch(`http://localhost:8000/queryStock?symbol=${element}&tokenF=${tokenF}`);
+                    const stockResponse = await fetch(`/queryStock?symbol=${element}&tokenF=${tokenF}`);
                     const singleStock = await stockResponse.json();
                     temp = [...temp, singleStock]
                 }

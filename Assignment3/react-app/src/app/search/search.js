@@ -55,7 +55,7 @@ const SearchComponent = () => {
     setInputValue(value);
     setSuggestions([])
     setSuggestLoading(true);
-    fetch(`http://localhost:8000/autoComplete?q=${value}&tokenF=${tokenF}`)
+    fetch(`/autoComplete?q=${value}&tokenF=${tokenF}`)
       .then(response => response.json())
       .then(data => {
         setSuggestions(data.result)
@@ -86,7 +86,7 @@ const SearchComponent = () => {
       setLoadingResult(true)
       singleRequest = !singleRequest
       setStockData({})
-      fetch(`http://127.0.0.1:8000/search?symbol=${symbol}&tokenF=${tokenF}&tokenP=${tokenP}`)
+      fetch(`/search?symbol=${symbol}&tokenF=${tokenF}&tokenP=${tokenP}`)
         .then(response => response.json())
         .then(data => {
           tempData = data
@@ -96,7 +96,7 @@ const SearchComponent = () => {
           setLoadingResult(false)
         })
         .catch(error => console.error('Error:', error));
-      fetch(`http://localhost:8000/queryUserData`)
+      fetch(`/queryUserData`)
         .then(response => response.json())
         .then(data => {
           setUserData(data)
@@ -118,7 +118,7 @@ const SearchComponent = () => {
 
     const updateData = async () => {
       if (symbol && tempData.t && (Math.abs(Date.now() - tempData.t * 1000) <= 60 * 1000)) {
-        const response = await fetch(`http://localhost:8000/queryStock?symbol=${symbol}&tokenF=${tokenF}`);
+        const response = await fetch(`/queryStock?symbol=${symbol}&tokenF=${tokenF}`);
         const updateData = await response.json()
         setStockData({ ...tempData, ...updateData })
       }
@@ -140,7 +140,7 @@ const SearchComponent = () => {
       setNewsModalVisible(true)
     }
     const handleFavorite = () => {
-      fetch(`http://localhost:8000/handleWatchList?symbol=${symbol}`)
+      fetch(`/handleWatchList?symbol=${symbol}`)
         .then(response => response.json())
         .then(data => {
           setUserData(data)
@@ -159,9 +159,9 @@ const SearchComponent = () => {
     const handleDeal = () => {
       var url = ''
       if (dealState === 'buy') {
-        url = `http://localhost:8000/makeDeal?symbol=${symbol}&num=${dealInput}&price=${stockData.c}`
+        url = `/makeDeal?symbol=${symbol}&num=${dealInput}&price=${stockData.c}`
       } else if (dealState === 'sell') {
-        url = `http://localhost:8000/makeDeal?symbol=${symbol}&num=-${dealInput}&price=${stockData.c}`
+        url = `/makeDeal?symbol=${symbol}&num=-${dealInput}&price=${stockData.c}`
       }
       fetch(url)
         .then(response => response.json())

@@ -38,9 +38,9 @@ const PortfolioComponent = () => {
     const handleDeal = async () => {
         var url = ''
         if (dealState === 'buy') {
-            url = `http://localhost:8000/makeDeal?symbol=${selectedStock.ticker}&num=${dealInput}&price=${selectedStock.c}`
+            url = `/makeDeal?symbol=${selectedStock.ticker}&num=${dealInput}&price=${selectedStock.c}`
         } else if (dealState === 'sell') {
-            url = `http://localhost:8000/makeDeal?symbol=${selectedStock.ticker}&num=-${dealInput}&price=${selectedStock.c}`
+            url = `/makeDeal?symbol=${selectedStock.ticker}&num=-${dealInput}&price=${selectedStock.c}`
         }
         const userDataResponse = await fetch(url)
         const userDataJson = await userDataResponse.json();
@@ -49,7 +49,7 @@ const PortfolioComponent = () => {
         dealState === 'buy' ? showNotice(`${selectedStock.ticker} bought successfully`, 'rgba(0, 255, 0, 0.3)') : showNotice(`${selectedStock.ticker} sold successfully`, 'rgba(255, 0, 0, 0.3)')
         var temp = []
         for (const element in userDataJson.portfolio) {
-            const stockResponse = await fetch(`http://localhost:8000/queryStock?symbol=${element}&tokenF=${tokenF}`);
+            const stockResponse = await fetch(`/queryStock?symbol=${element}&tokenF=${tokenF}`);
             const singleStock = await stockResponse.json();
             temp = [...temp, singleStock]
         }
@@ -59,12 +59,12 @@ const PortfolioComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userDataResponse = await fetch(`http://localhost:8000/queryUserData`);
+                const userDataResponse = await fetch(`/queryUserData`);
                 const userDataJson = await userDataResponse.json();
                 setUserData(userDataJson);
                 var temp = []
                 for (const element in userDataJson.portfolio) {
-                    const stockResponse = await fetch(`http://localhost:8000/queryStock?symbol=${element}&tokenF=${tokenF}`);
+                    const stockResponse = await fetch(`/queryStock?symbol=${element}&tokenF=${tokenF}`);
                     const singleStock = await stockResponse.json();
                     temp = [...temp, singleStock]
                 }
