@@ -1,0 +1,33 @@
+{
+  "originHash" : "f55000d5bae2dea922dc1644f30437a8570e91a8b26c03a906490781fcd0b857",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
+        "version" : "5.9.1"
+      }
+    },
+    {
+      "identity" : "highcharts-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/highcharts/highcharts-ios",
+      "state" : {
+        "revision" : "8963b14310e2ef3fa415ea68511714888a1c1c32",
+        "version" : "11.4.1"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftyJSON/SwiftyJSON",
+      "state" : {
+        "revision" : "af76cf3ef710b6ca5f8c05f3a31307d44a3c5828",
+        "version" : "5.0.2"
+      }
+    }
+  ],
+  "version" : 3
+}
