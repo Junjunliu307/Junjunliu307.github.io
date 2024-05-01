@@ -24,7 +24,6 @@ struct HighchartsWebView: UIViewRepresentable {
         uiView.loadHTMLString(htmlString, baseURL: nil)
     }
 }
-
 struct Toast<Presenting>: View where Presenting: View {
 
     /// The binding that decides the appropriate drawing in the body.
@@ -54,11 +53,8 @@ struct Toast<Presenting>: View where Presenting: View {
                 .transition(.slide)
                 .opacity(self.isShowing ? 1 : 0)
             }
-
         }
-
     }
-
 }
 
 extension View {
@@ -88,17 +84,17 @@ struct NewsSheetView: View {
                     Image(systemName: "multiply")
                         .foregroundColor(.gray)
                 }
-            }
+            }.padding(.top,20)
             Divider().hidden()
             Divider().hidden()
-            Text("\(selectedNews["source"] ?? "")")
-            Text("\(formatDateFromTimestamp(timestamp: selectedNews["datetime"] as? TimeInterval ?? 0))")
+            Text("\(selectedNews["source"] ?? "")").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).font(.title)
+            Text("\(formatDateFromTimestamp(timestamp: selectedNews["datetime"] as? TimeInterval ?? 0))").foregroundColor(.gray).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
             Divider()
-            Text("\(selectedNews["headline"] ?? "")")
+            Text("\(selectedNews["headline"] ?? "")").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).font(.headline)
             Divider().hidden()
             Text("\(selectedNews["summary"] ?? "")")
             HStack{
-                Text("For more details click")
+                Text("For more details click").foregroundColor(.gray)
                 Text("here").onTapGesture {
                     if let url = URL(string: "\(selectedNews["url"] ?? "")") {
                         UIApplication.shared.open(url)
@@ -134,7 +130,7 @@ struct NewsSheetView: View {
                 }
             }
             Spacer()
-        }
+        }.padding(.horizontal,20)
         
     }
     func formatDateFromTimestamp(timestamp: TimeInterval) -> String {
@@ -149,9 +145,11 @@ struct NewsSheetView: View {
 
 struct DealSheetView: View {
     @Environment(\.dismiss) var dismiss
-    let stockData: [String: Any]
-    let userData: UserData?
-    
+    @Binding var stockData: [String: Any]
+    @Binding var userData: UserData?
+
+    @State private var showToast: Bool = false
+    @State private var toastText: String = ""
     @State private var inputNumber: String = ""
     @State private var totalPrice: Double = 0
     @State private var dealFinished: Bool = false
@@ -164,8 +162,9 @@ struct DealSheetView: View {
                     Spacer()
                     VStack{
                         Spacer()
-                        Text("Congradulations!")
-                        Text("\(message)")
+                        Text("Congradulations!").font(.largeTitle).foregroundColor(.white).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        Divider().hidden()
+                        Text("\(message)").foregroundColor(.white)
                         Spacer()
                         Button(action: {
                             withAnimation {
@@ -173,11 +172,14 @@ struct DealSheetView: View {
                             }
                             UIApplication.shared.endEditing()
                         }) {
-                            Text("Done").fontWeight(.bold)
-                                .foregroundColor(.green)
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(10)
+                            HStack{
+                                Spacer()
+                                Text("Done").fontWeight(.bold)
+                                    .foregroundColor(.green)
+                                    .padding(.vertical,10)
+                                Spacer()
+                            }.background(Color.white)
+                                .cornerRadius(20)
                         }
                     }
                     Spacer()
@@ -195,13 +197,13 @@ struct DealSheetView: View {
                         Spacer()
                         Image(systemName: "multiply")
                             .foregroundColor(.gray)
-                    }
+                    }.padding(.top,20)
                 }
                 Divider().hidden()
                 Divider().hidden()
                 HStack{
                     Spacer()
-                    Text("Trade \(stockData["name"] ?? "") shares").foregroundColor(Color.gray)
+                    Text("Trade \(stockData["name"] ?? "") shares").fontWeight(.bold).foregroundColor(Color.black)
                     Spacer()
                 }
                 
@@ -220,13 +222,13 @@ struct DealSheetView: View {
                 HStack{
                     let price = stockData["c"] as? Double ?? 0
                     Spacer()
-                    Text("x $\(price)/share = \(totalPrice)$")
+                    Text("x $\(String(format: "%.2f",price))/share = \(String(format: "%.2f",totalPrice))$")
                     
                 }
                 Spacer()
                 HStack{
                     Spacer()
-                    Text("$\(userData?.money ?? 0) available to buy \(stockData["ticker"] ?? "")")
+                    Text("$\(String(format: "%.2f",(userData?.money ?? 0))) available to buy \(stockData["ticker"] ?? "")").foregroundColor(.gray)
                     Spacer()
                 }
                 HStack{
@@ -237,11 +239,14 @@ struct DealSheetView: View {
                         }
                         UIApplication.shared.endEditing()
                     }) {
-                        Text("Buy").fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.green)
-                            .cornerRadius(10)
+                        HStack{
+                            Spacer()
+                            Text("Buy").fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .padding(.vertical,10)
+                            Spacer()
+                        }.background(Color.green)
+                            .cornerRadius(20)
                     }
                     Button(action: {
                         withAnimation {
@@ -249,16 +254,22 @@ struct DealSheetView: View {
                         }
                         UIApplication.shared.endEditing()
                     }) {
-                        Text("Sell").fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.green)
-                            .cornerRadius(10)
+                        HStack{
+                            Spacer()
+                            Text("Sell").fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .padding(.vertical,10)
+                            Spacer()
+                        }.background(Color.green)
+                            .cornerRadius(20)
                     }
                     Spacer()
                 }
                 
             }.padding(.horizontal, 20)
+                .toast(isShowing: $showToast, text: {
+                    return Text("\(toastText)")
+                }())
         }
         
     }
@@ -266,26 +277,74 @@ struct DealSheetView: View {
     func handleDeal(dealType: String){
         let userMoney = userData?.money ?? 0
         let price = stockData["c"] as? Double ?? 0
-        if dealType == "buy"{
-            AF.request("http://localhost:8000/makeDeal?symbol=\(stockData["ticker"] ?? "")&num=\(inputNumber)&price=\(price)").responseJSON { response in
-                switch response.result {
-                case .success(let data):
-                    dealFinished = true
-                    message = "You have successfully bought \(inputNumber) shares of \(stockData["ticker"] ?? "")"
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
+        let ticker = stockData["ticker"] as? String ?? ""
+        let history = userData?.portfolio["\(ticker)"] as? [Double] ?? []
+        if !isPositiveInteger(inputNumber){
+            toastText = "Please enter a valid amount"
+            showToast.toggle()
+        }else if dealType == "buy"{
+            if let num = Double(inputNumber){
+                if price * num > userMoney{
+                    toastText = "Not enough to buy"
+                    showToast.toggle()
+                }else{
+                    AF.request("http://localhost:8000/makeDeal?symbol=\(stockData["ticker"] ?? "")&num=\(inputNumber)&price=\(price)").responseJSON { response in
+                        switch response.result {
+                        case .success(let data):
+                            dealFinished = true
+                            message = "You have successfully bought \(inputNumber) shares of \(stockData["ticker"] ?? "")"
+                            guard let json = try? JSON(data) else{print("Failed in trasfer user data to json")}
+                            do{
+                                userData = try JSONDecoder().decode(UserData.self, from: json.rawData())}
+                            catch{
+                                print("JSON Decode Error")
+                            }
+                        case .failure(let error):
+                            print("Error: \(error.localizedDescription)")
+                        }
+                    }
                 }
             }
+
         }else if dealType == "sell"{
-            AF.request("http://localhost:8000/makeDeal?symbol=\(stockData["ticker"] ?? "")&num=-\(inputNumber)&price=\(price)").responseJSON { response in
-                switch response.result {
-                case .success(let data):
-                    dealFinished = true
-                    message = "You have successfully sold \(inputNumber) shares of \(stockData["ticker"] ?? "")"
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
+            if let num = Int(inputNumber){
+                if num > history.count{
+                    toastText = "Not enough to sell"
+                    showToast.toggle()
+                }else{
+                    AF.request("http://localhost:8000/makeDeal?symbol=\(stockData["ticker"] ?? "")&num=-\(inputNumber)&price=\(price)").responseJSON { response in
+                        switch response.result {
+                        case .success(let data):
+                            dealFinished = true
+                            message = "You have successfully sold \(inputNumber) shares of \(stockData["ticker"] ?? "")"
+                            guard let json = try? JSON(data) else{print("Failed in trasfer user data to json")}
+                            do{
+                                userData = try JSONDecoder().decode(UserData.self, from: json.rawData())}
+                            catch{
+                                print("JSON Decode Error")
+                            }
+                        case .failure(let error):
+                            print("Error: \(error.localizedDescription)")
+                        }
+                    }
                 }
             }
+        }
+        if showToast {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    showToast = false
+                    toastText = ""
+                }
+        }
+    }
+    func isPositiveInteger(_ str: String) -> Bool {
+        let pattern = "^[1-9]\\d*$"
+        do {
+            let regex = try NSRegularExpression(pattern: pattern)
+            let matches = regex.matches(in: str, range: NSRange(str.startIndex..., in: str))
+            return !matches.isEmpty && matches[0].range == NSRange(location: 0, length: str.count)
+        } catch {
+            return false
         }
     }
     
@@ -301,6 +360,7 @@ struct StockView: View {
     @State private var selectedSpan = "Hourly"
     @State private var showNewsDetail = false
     @State private var showToast: Bool = false
+    @State private var toastText: String = ""
     @State private var showDeal = false
     init(sym: String) {
         self.sym = sym
@@ -394,23 +454,27 @@ struct StockView: View {
                                             let total = history.reduce(0, +)
                                             let marketVal = Double(history.count) * currentPrice
                                             let change = marketVal - total
-                                            let color = change > 0 ? Color.green : (change < 0 ? Color.red :  Color.gray)
+                                            let color = change > 0 ? Color.green : (change < 0 ? Color.red :  Color.black)
                                             HStack{
                                                 Text("Shares Owned:  ").fontWeight(.bold)
                                                 Text("\(history.count)")
                                             }
+                                            Divider().hidden()
                                             HStack{
                                                 Text("Avg. Cost/Share:  ").fontWeight(.bold)
                                                 Text("$\(String(format: "%.2f",(total/Double(history.count))))")
                                             }
+                                            Divider().hidden()
                                             HStack{
                                                 Text("Total Cost:  ").fontWeight(.bold)
                                                 Text("$\(String(format: "%.2f",total))")
                                             }
+                                            Divider().hidden()
                                             HStack{
                                                 Text("Change:  ").fontWeight(.bold).foregroundColor(color)
                                                 Text("$\(String(format: "%.2f",(marketVal - total)))").foregroundColor(color)
                                             }
+                                            Divider().hidden()
                                             HStack{
                                                 Text("Market Value:  ").fontWeight(.bold).foregroundColor(color)
                                                 Text("$\(String(format: "%.2f",marketVal))").foregroundColor(color)
@@ -418,6 +482,7 @@ struct StockView: View {
                                         }
                                     }else{
                                         Text("You have 0 shares of \(ticker).")
+                                        Divider().hidden()
                                         Text("Start trading!")
                                     }
                                 }
@@ -431,12 +496,12 @@ struct StockView: View {
                                     Text("Trade")
                                         .foregroundColor(.white)
                                         .fontWeight(.bold)
-                                        .padding(.horizontal,20)
+                                        .padding(.horizontal,30)
                                         .padding(.vertical,10)
                                 }.background(Color.green)
-                                    .cornerRadius(16)
+                                    .cornerRadius(20)
                                     .sheet(isPresented: $showDeal) {
-                                        DealSheetView(stockData: stockData, userData: userData)
+                                        DealSheetView(stockData: $stockData, userData: $userData)
                                     }
                             }
                         }
@@ -446,12 +511,14 @@ struct StockView: View {
                                 Text("Stats").font(.title)
                                 Spacer()
                             }
+                            Divider().hidden()
                             HStack{
                                 VStack(alignment: .leading){
                                     HStack{
                                         Text("High Price: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                         Text("$\(stockData["c"] ?? "")")
                                     }
+                                    Divider().hidden()
                                     HStack{
                                         Text("Low Price: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                         Text("$\(stockData["l"] ?? "")")
@@ -462,6 +529,7 @@ struct StockView: View {
                                         Text("Open Price: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                         Text("$\(stockData["o"] ?? "")")
                                     }
+                                    Divider().hidden()
                                     HStack{
                                         Text("Prev. Close: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                         Text("$\(stockData["pc"] ?? "")")
@@ -475,6 +543,7 @@ struct StockView: View {
                                 Text("About").font(.title)
                                 Spacer()
                             }
+                            Divider().hidden()
                             HStack{
                                 VStack(alignment: .leading){
                                     Text("IPO Start Date:").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -523,29 +592,45 @@ struct StockView: View {
                                 Text("Insights").font(.title)
                                 Spacer()
                             }
+                            Divider().hidden()
                             HStack{
                                 Spacer()
                                 Text("Insider Sentiments").font(.title)
                                 Spacer()
                             }
+                            Divider().hidden()
                             HStack{
                                 VStack(alignment: .leading){
                                     Text("\(stockData["name"] ?? "")").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                    Divider()
                                     Text("Total").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                    Divider()
                                     Text("Positive").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                    Divider()
                                     Text("Negative").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                    Divider()
                                 }
+                                Spacer()
                                 VStack(alignment: .leading){
                                     Text("MSPR").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                    Text("\(MSPRTotal)")
-                                    Text("\(MSPRPositive)")
-                                    Text("\(MSPRNegative)")
+                                    Divider()
+                                    Text("\(String(format: "%.2f",MSPRTotal))")
+                                    Divider()
+                                    Text("\(String(format: "%.2f",MSPRPositive))")
+                                    Divider()
+                                    Text("\(String(format: "%.2f",MSPRNegative))")
+                                    Divider()
                                 }
+                                Spacer()
                                 VStack(alignment: .leading){
                                     Text("Change").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                    Divider()
                                     Text("\(ChangeTotal)")
+                                    Divider()
                                     Text("\(ChangePositive)")
+                                    Divider()
                                     Text("\(ChangeNegative)")
+                                    Divider()
                                 }
                             }
                         }
@@ -584,6 +669,8 @@ struct StockView: View {
                                                         Text("\(news["source"] ?? "") \(formatTimeInterval(timestamp:datetime))").foregroundColor(Color.gray)
                                                             .font(.system(size: 12))
                                                         Text("\(news["headline"] ?? "")").foregroundColor(Color.black)
+                                                            .multilineTextAlignment(.leading)
+                                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                                     }
                                                 }.sheet(isPresented: $showNewsDetail) {
                                                     NewsSheetView(selectedNews: news)
@@ -603,6 +690,8 @@ struct StockView: View {
                                                                 .foregroundColor(Color.gray)
                                                                 .font(.system(size: 12))
                                                             Text("\(news["headline"] ?? "")").foregroundColor(Color.black)
+                                                                .multilineTextAlignment(.leading)
+                                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                                         }
                                                         Spacer()
                                                         AsyncImage(url: URL(string: "\(news["image"] ?? "")")){ phase in
@@ -642,11 +731,7 @@ struct StockView: View {
                             }
                         }
             ).toast(isShowing: $showToast, text: {
-                if let watchlist = userData?.watchlist{
-                    let toastText = watchlist.contains("\(sym)") ? "Adding \(sym) to Favorites" : "Removinging \(sym) to Favorites"
-                    return Text("\(toastText)")
-                }
-                return Text("Error")
+                return Text("\(toastText)")
             }())
     }
     func fresh(){
@@ -739,7 +824,6 @@ struct StockView: View {
 
             // Remove the trailing comma
             dataString.removeLast()
-
             dataString += "]"
             return """
     <html>
@@ -903,6 +987,7 @@ struct StockView: View {
         </html>
         """
     }
+    
     func generateRecommendationStockHTML() -> String {
         guard let recommendationData = stockData["recommendationData"] as? [[String:Any]] else {
             return "Error: recommendation data is missing or has incorrect format"
@@ -1082,12 +1167,15 @@ struct StockView: View {
             case .success(let data):
                 guard let json = try? JSON(data) else{print("Failed in trasfer user data to json")}
                 self.showToast.toggle()
+                if let watchlist = userData?.watchlist{
+                    toastText = !watchlist.contains("\(sym)") ? "Adding \(sym) to Favorites" : "Removinging \(sym) from Favorites"
+                }
                 if self.showToast {
-                                // 2秒后自动隐藏
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    self.showToast = false
-                                }
-                            }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.showToast = false
+                            toastText = ""
+                        }
+                }
                 do{
                     userData = try JSONDecoder().decode(UserData.self, from: json.rawData())}
                 catch{
