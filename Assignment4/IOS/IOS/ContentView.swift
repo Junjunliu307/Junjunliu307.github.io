@@ -152,7 +152,7 @@ struct ContentView: View {
                                             let arrowSymbolName = change > 0 ? "arrow.up.right" : (change < 0 ? "arrow.down.right" :  "minus")
                                             let arrowSymbol = Image(systemName: arrowSymbolName)
                                                 .foregroundColor(color)
-                                            NavigationLink(destination: StockView(sym: "\(ticker)")) {
+                                            NavigationLink(destination: StockView(sym: "\(ticker)",preNavigationBarHidden: .constant(true))) {
                                                 HStack{
                                                     VStack{
                                                         HStack {
@@ -216,7 +216,7 @@ struct ContentView: View {
                                         let arrowSymbol = Image(systemName: arrowSymbolName)
                                             .foregroundColor(color)
                                         if let ticker = favoritesData[index]["ticker"] as? String{
-                                            NavigationLink(destination: StockView(sym: "\(ticker)")) {
+                                            NavigationLink(destination: StockView(sym: "\(ticker)",preNavigationBarHidden: .constant(true))) {
                                                 HStack{
                                                     VStack{
                                                         HStack {
@@ -268,7 +268,7 @@ struct ContentView: View {
                                     List{
                                         ForEach(0..<suggestions.count) { index in
                                             if let ticker = suggestions[index]["symbol"] as? String{
-                                                NavigationLink(destination: StockView(sym: "\(ticker)")) {
+                                                NavigationLink(destination: StockView(sym: "\(ticker)",preNavigationBarHidden: .constant(true))) {
                                                     VStack(alignment: .leading){
                                                         Text("\(suggestions[index]["symbol"] ?? "" )").fontWeight(.bold).font(.system(size: 20))
                                                         Text("\(suggestions[index]["description"] ?? "")").foregroundColor(.gray)
@@ -280,6 +280,7 @@ struct ContentView: View {
                                         .background(Color.white)
                                         .cornerRadius(8)
                                         .frame(width: geometry.size.width, height: geometry.size.height*7/12)
+//                                        .frame(width: geometry.size.width, height: geometry.size.height)
                                 }
                             }
                             Spacer()
@@ -346,8 +347,8 @@ struct ContentView: View {
             }
         dispatchGroup.notify(queue: .main) {
                 isLoading = false
-            }
         }
+    }
     func loadSuggestion(){
         isSuggestionLoading = true
         let dispatchGroup = DispatchGroup()
@@ -418,6 +419,7 @@ struct ContentView: View {
                 favoritesData.remove(atOffsets: offsets)
             }
     }
+    
     func handleWatchlist(sym: String){
         AF.request("http://localhost:8000/handleWatchList?symbol=\(sym)").responseJSON { response in
             switch response.result {

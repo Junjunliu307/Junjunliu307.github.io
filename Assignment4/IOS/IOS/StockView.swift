@@ -21,7 +21,35 @@ struct HighchartsWebView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        uiView.loadHTMLString(htmlString, baseURL: nil)
+        let htmlWithStyle = """
+        <html>
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body, html {
+                        width: 100%;
+                        height: 100%;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    #container {
+                        width: 100%;
+                        height: 100%;
+                    }
+                    
+                    @media screen and (max-width: 768px) {
+                        #container {
+                            width: 100%;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                \(htmlString)
+            </body>
+        </html>
+        """
+        uiView.loadHTMLString(htmlWithStyle, baseURL: nil)
     }
 }
 struct Toast<Presenting>: View where Presenting: View {
@@ -354,6 +382,8 @@ struct StockView: View {
     let sym: String
     let tokenF = "cmvcithr01qog1iutdmgcmvcithr01qog1iutdn0"
     let tokenP = "fSelM6w8GpMT23I9Cf6pwdkQNtl6OiJG"
+    @Binding var preNavigationBarHidden: Bool
+    
     @State private var stockData: [String: Any] = [:]
     @State private var userData: UserData?
     @State private var isLoading = true
@@ -362,21 +392,23 @@ struct StockView: View {
     @State private var showToast: Bool = false
     @State private var toastText: String = ""
     @State private var showDeal = false
-    init(sym: String) {
-        self.sym = sym
-        
-    }
+    @State private var isNavigationBarHidden = false
+
     
     var body: some View {
         NavigationView {
             if isLoading{
                 VStack{
                     Image(systemName: "rays")
-                    Text("Fetching Data...")
+                    Text("Fetching Data...").foregroundColor(Color.gray)
                 }
             }else{
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack{
+//                        HStack{
+//                            Text("\(stockData["ticker"] ?? "")").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                            Spacer()
+//                        }
                         HStack{
                             Text("\(stockData["name"] ?? "")")
                                 .foregroundColor(Color.gray)
@@ -407,9 +439,9 @@ struct StockView: View {
                             }
                         }
                         if selectedSpan == "Hourly"{
-                            HighchartsWebView(htmlString: generateHourlyStockHTML()).frame(height: 160)
+                            HighchartsWebView(htmlString: generateHourlyStockHTML()).frame(height: 400)
                         }else{
-                            HighchartsWebView(htmlString: generateHistoricalStockHTML()).frame(height: 160)
+                            HighchartsWebView(htmlString: generateHistoricalStockHTML()).frame(height: 400)
                         }
                         HStack{
                             Spacer()
@@ -421,8 +453,8 @@ struct StockView: View {
                             }) {
                                 VStack{
                                     Image(systemName: "chart.xyaxis.line")
-                                        .foregroundColor(.gray)
-                                    Text("Hourly").foregroundColor(.gray)
+                                        .foregroundColor(selectedSpan == "Hourly" ? .blue:.gray)
+                                    Text("Hourly").foregroundColor(selectedSpan == "Hourly" ? .blue:.gray)
                                 }
                             }
                             Spacer()
@@ -434,8 +466,8 @@ struct StockView: View {
                             }) {
                                 VStack{
                                     Image(systemName: "clock.fill")
-                                        .foregroundColor(.gray)
-                                    Text("Historical").foregroundColor(.gray)
+                                        .foregroundColor(selectedSpan == "Historical" ? .blue:.gray)
+                                    Text("Historical").foregroundColor(selectedSpan == "Historical" ? .blue:.gray)
                                 }
                             }
                             Spacer()
@@ -565,11 +597,15 @@ struct StockView: View {
                                             if let peers = stockData["peers"] as? [String]{
                                                 ForEach(0..<peers.count) { index in
                                                     let item = peers[index]
-                                                    NavigationLink(destination: StockView(sym: "\(peers[index])")){
-                                                        Text("\(peers[index]),")
-                                                            .foregroundColor(.blue)
-                                                            .underline()
-                                                    }
+
+                                                        NavigationLink(destination: StockView(sym: "\(peers[index])",preNavigationBarHidden: $isNavigationBarHidden)){
+                                                            Text("\(peers[index]),")
+                                                                .foregroundColor(.blue)
+                                                                .underline()
+                                                        }
+                                                        .simultaneousGesture(TapGesture().onEnded {
+                                                            isNavigationBarHidden = true
+                                                        })
                                                 }
                                             }
                                         }
@@ -635,9 +671,9 @@ struct StockView: View {
                             }
                         }
                         Divider().hidden()
-                        HighchartsWebView(htmlString: generateRecommendationStockHTML()).frame(height: 160)
+                        HighchartsWebView(htmlString: generateRecommendationStockHTML()).frame(height: 400)
                         Divider().hidden()
-                        HighchartsWebView(htmlString: generateEPSChartHTML()).frame(height: 160)
+                        HighchartsWebView(htmlString: generateEPSChartHTML()).frame(height: 400)
                         VStack(alignment: .leading){
                             HStack{
                                 Text("News").font(.title)
@@ -719,20 +755,23 @@ struct StockView: View {
                 
             }
         }.onAppear {fresh()}
-            .navigationBarTitle("\(sym)")
+            .onDisappear{preNavigationBarHidden = false}
+            .navigationTitle(isLoading ? "":"\(stockData["ticker"] ?? "")")
+            .navigationBarTitleDisplayMode(.automatic)
             .navigationBarItems(trailing:
                         Button(action: {
                             handleWatchlist()
-                            
                         }) {
                             if let watchlist = userData?.watchlist{
                                 let iconName = watchlist.contains("\(sym)") ? "plus.circle.fill" : "plus.circle"
                                 Image(systemName: "\(iconName)")
                             }
                         }
-            ).toast(isShowing: $showToast, text: {
+            )
+            .toast(isShowing: $showToast, text: {
                 return Text("\(toastText)")
             }())
+            .navigationBarHidden(isNavigationBarHidden)
     }
     func fresh(){
         let dispatchGroup = DispatchGroup()
@@ -752,18 +791,18 @@ struct StockView: View {
             dispatchGroup.leave()
         }
         dispatchGroup.enter()
-        //        AF.request("http://localhost:8000/search?symbol=\(sym)&tokenF=\(tokenF)&tokenP=\(tokenP)").responseJSON { response in
-        //            switch response.result {
-        //            case .success(let data):
-        //                if let stockResponse = data as? [String: Any] {
-        //                    stockData = stockResponse
-        //                }
-        //            case .failure(let error):
-        //                print("Error: \(error.localizedDescription)")
-        //            }
-        //            dispatchGroup.leave()
-        //        }
-        if let fileURL = Bundle.main.url(forResource: "data", withExtension: "json") {
+//                AF.request("http://localhost:8000/search?symbol=\(sym)&tokenF=\(tokenF)&tokenP=\(tokenP)").responseJSON { response in
+//                    switch response.result {
+//                    case .success(let data):
+//                        if let stockResponse = data as? [String: Any] {
+//                            stockData = stockResponse
+//                        }
+//                    case .failure(let error):
+//                        print("Error: \(error.localizedDescription)")
+//                    }
+//                    dispatchGroup.leave()
+//                }
+        if let fileURL = Bundle.main.url(forResource: "\(sym)", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: fileURL)
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -847,9 +886,12 @@ struct StockView: View {
                     title: {
                         text: '\(stockData["ticker"] ?? "") Hourly Price Variation'
                     },
+                    xAxis:{
+                        type: 'datetime',
+                    },
                     series: [{
                         name: '\(stockData["ticker"] ?? "")',
-                        data: \(hourlyData),
+                        data: \(hourlyData.suffix(24)),
                         color: 'green'
                     }]
                 });
@@ -1008,7 +1050,7 @@ struct StockView: View {
                                 type: 'column',
                             },
                             navigator: {
-                                enabled: false // 设置为false以隐藏导航器
+                                enabled: false
                             },
                             rangeSelector: {
                                 buttons: [],
@@ -1018,7 +1060,7 @@ struct StockView: View {
                                 text: 'Recommendation Trends'
                             },
                             xAxis: {
-                                type: 'datetime',
+                                type: 'category',
                             },
                             yAxis: {
                                 title: {
@@ -1037,7 +1079,7 @@ struct StockView: View {
                                     let period = $0["period"] as? String ?? ""
                                     let strongBuy = $0["strongBuy"] as? Double ?? 0
                                     return [period, strongBuy]
-                                    }).map { [$0[0], $0[1]] })
+                                    }).map { [$0[0], $0[1]] }).reverse()
                             }, {
                                 name: 'Buy',
                                 color: '#3CB371',
@@ -1045,7 +1087,7 @@ struct StockView: View {
                                     let period = $0["period"] as? String ?? ""
                                     let buy = $0["buy"] as? Double ?? 0
                                     return [period, buy]
-                                    }).map { [$0[0], $0[1]] })
+                                    }).map { [$0[0], $0[1]] }).reverse()
                             }, {
                                 name: 'Hold',
                                 color: '#B8860B',
@@ -1053,7 +1095,7 @@ struct StockView: View {
                                     let period = $0["period"] as? String ?? ""
                                     let hold = $0["hold"] as? Double ?? 0
                                     return [period, hold]
-                                    }).map { [$0[0], $0[1]] })
+                                    }).map { [$0[0], $0[1]] }).reverse()
                             }, {
                                 name: 'Sell',
                                 color: '#FF6347',
@@ -1061,7 +1103,7 @@ struct StockView: View {
                                     let period = $0["period"] as? String ?? ""
                                     let sell = $0["sell"] as? Double ?? 0
                                     return [period, sell]
-                                    }).map { [$0[0], $0[1]] })
+                                    }).map { [$0[0], $0[1]] }).reverse()
                             }, {
                                 name: 'Strong Sell',
                                 color: '#8B4513',
@@ -1069,7 +1111,7 @@ struct StockView: View {
                                     let period = $0["period"] as? String ?? ""
                                     let strongSell = $0["strongSell"] as? Double ?? 0
                                     return [period, strongSell]
-                                    }).map { [$0[0], $0[1]] })
+                                    }).map { [$0[0], $0[1]] }).reverse()
                             }]
                         });
                     });
@@ -1083,9 +1125,40 @@ struct StockView: View {
         guard let earnings = stockData["earnings"] as? [[String:Any]] else{
             return "Error: earnings data is missing or has incorrect format"
         }
-        let dates = earnings.map { $0["period"] as? String ?? "" }.map { String($0.prefix(10)) }
-        let actualEPS = earnings.map { $0["actual"] as? Double ?? 0 }
-        let estimateEPS = earnings.map { $0["estimate"] as? Double ?? 0 }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let dates = earnings.map {
+            let period =  $0["period"] as? String ?? ""
+            if let date = dateFormatter.date(from: String(period.prefix(10))){
+                return date.timeIntervalSince1970 * 1000
+            }else{
+                return 0
+            }
+        }
+        
+        let actualEPS = earnings.map {
+            let actual = $0["actual"] as? Double ?? 0
+            let period =  $0["period"] as? String ?? ""
+            if let date = dateFormatter.date(from: String(period.prefix(10))){
+                return [date.timeIntervalSince1970 * 1000,actual]
+            }else{
+                return [0]
+            }
+        }
+        let estimateEPS = earnings.map {
+            let estimate = $0["estimate"] as? Double ?? 0
+            let period =  $0["period"] as? String ?? ""
+            if let date = dateFormatter.date(from: String(period.prefix(10))){
+                return [date.timeIntervalSince1970 * 1000,estimate]
+            }else{
+                return [0]
+            }
+        }
+        
+        let firstDate = dates.min() ?? 0
+        let lastDate = dates.max() ?? 0
+        let timeInterval = (lastDate - firstDate) * 1 / 3
         return """
         <html>
         <head>
@@ -1112,7 +1185,8 @@ struct StockView: View {
                             text: 'Historical EPS Surprises'
                         },
                         xAxis: {
-                            categories: \(dates),
+                            type: 'datetime',
+                            tickInterval: 1
                         },
                         yAxis: {
                             title: {
@@ -1122,11 +1196,11 @@ struct StockView: View {
                         },
                         series: [{
                             name: 'Actual',
-                            data: \(actualEPS),
+                            data: \(actualEPS).reverse(),
                             type: 'spline'
                         }, {
                             name: 'Estimate',
-                            data: \(estimateEPS),
+                            data: \(estimateEPS).reverse(),
                             type: 'spline'
                         }]
                     });
@@ -1190,7 +1264,5 @@ struct StockView: View {
 }
 
 #Preview {
-    StockView(sym: "TSLA")
+    StockView(sym: "NVDA",preNavigationBarHidden: .constant(true))
 }
-
-

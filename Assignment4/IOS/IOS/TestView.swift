@@ -8,36 +8,39 @@
 import SwiftUI
 
 struct TestView: View {
-    @State private var favoritesData: [[String: Any]] = [["ticker": "AAPL", "name": "Apple Inc.", "c": 150.0, "d": 10.0, "dp": 5.0],
-                                                         ["ticker": "GOOGL", "name": "Alphabet Inc.", "c": 2500.0, "d": -5.0, "dp": -2.0],
-                                                         ["ticker": "MSFT", "name": "Microsoft Corporation", "c": 300.0, "d": 8.0, "dp": 3.0]]
-
-//    var body: some View {
-//        List {
-//            ForEach(favoritesData.indices, id: \.self) { index in
-//                let favorite = favoritesData[index]
-//                Text("\(favorite["ticker"] ?? "") - \(favorite["name"] ?? "")")
-//            }
-//            .onMove(perform: { indices, newOffset in
-//                                favoritesData.move(fromOffsets: indices, toOffset: newOffset)
-//                            })
-//        }
-//    }
-//
-//    func move(from source: IndexSet, to destination: Int) {
-//        favoritesData.move(fromOffsets: source, toOffset: destination)
-//    }
-    @State private var users = ["Glenn", "Malcolm", "Nicola", "Terri"]
-
-        var body: some View {
-            NavigationStack {
-                List($users, id: \.self, editActions: .move) { $user in
-                    Text(user)
+    @Binding var preNavigationBarHidden: Bool
+    @State private var isNavigationBarHidden = false
+    var body: some View {
+        NavigationView {
+            VStack {
+                
+                // 使用NavigationLink来实现导航
+                NavigationLink(destination: TestView(preNavigationBarHidden: $isNavigationBarHidden)) {
+                    Text("Go to Next View")
                 }
+                .simultaneousGesture(TapGesture().onEnded {
+                    isNavigationBarHidden = true
+                })
             }
-        }
-    
+        }.navigationBarHidden(isNavigationBarHidden)
+            .onDisappear{preNavigationBarHidden = false}
+    }
 }
+
+//struct NextView: View {
+//    var body: some View {
+//        Text("Next View")
+//            .navigationBarTitle("Next View")
+//            .onAppear {
+//                // 在NextView显示时，将原先的导航栏隐藏
+//                UIApplication.shared.windows.first?.rootViewController?.navigationController?.setNavigationBarHidden(true, animated: false)
+//            }
+//            .onDisappear {
+//                // 在NextView消失时，将原先的导航栏重新显示
+//                UIApplication.shared.windows.first?.rootViewController?.navigationController?.setNavigationBarHidden(false, animated: false)
+//            }
+//    }
+//}
 #Preview {
-    TestView()
+    TestView(preNavigationBarHidden: .constant(true))
 }
